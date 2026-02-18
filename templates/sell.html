@@ -1,0 +1,170 @@
+{% extends "home.html" %}
+{% block title %}Sell Item · SecondShift{% endblock %}
+
+{% block content %}
+<div class="min-h-screen flex items-center justify-center px-4 py-12">
+  <div class="w-full max-w-2xl bg-white p-8 md:p-12 rounded-2xl shadow-xl">
+    <div class="mb-8">
+      <h1 class="text-4xl font-bold text-gray-900 mb-2">Sell Your Item</h1>
+      <p class="text-lg text-gray-600">List your item and connect with interested buyers on campus</p>
+    </div>
+
+    {% if error %}
+    <div class="bg-red-50 border-l-4 border-red-500 p-4 mb-6">
+      <p class="text-red-800">{{ error }}</p>
+    </div>
+    {% endif %}
+
+    <form method="post" action="/sell" enctype="multipart/form-data" class="space-y-6">
+      
+      <!-- TITLE -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-3">
+          Item Title <span class="text-red-500">*</span>
+        </label>
+        <input 
+          type="text" 
+          name="title" 
+          placeholder="e.g., Used Textbook - Calculus 101"
+          class="w-full border-2 border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:border-indigo-500 transition"
+          required
+        >
+        <p class="text-sm text-gray-500 mt-1">Be specific and descriptive</p>
+      </div>
+
+      <!-- DESCRIPTION -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-3">
+          Description <span class="text-gray-400">(Optional)</span>
+        </label>
+        <textarea 
+          name="description" 
+          rows="4"
+          placeholder="Describe the condition, features, and any other relevant details..."
+          class="w-full border-2 border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:border-indigo-500 transition"
+        ></textarea>
+        <p class="text-sm text-gray-500 mt-1">More details help buyers make informed decisions</p>
+      </div>
+
+      <!-- PRICE -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-3">
+          Price <span class="text-red-500">*</span>
+        </label>
+        <div class="relative">
+          <span class="absolute left-4 top-3 text-gray-500 text-lg font-semibold">₹</span>
+          <input 
+            type="number" 
+            name="price" 
+            placeholder="0" 
+            min="0"
+            class="w-full border-2 border-gray-300 rounded-lg pl-10 pr-4 py-3 focus:outline-none focus:border-indigo-500 transition"
+            required
+          >
+        </div>
+      </div>
+
+      <!-- NEGOTIABLE CHECKBOX -->
+      <div class="flex items-center space-x-3 p-4 bg-gray-50 rounded-lg">
+        <input 
+          type="checkbox" 
+          name="negotiable" 
+          id="negotiable"
+          value="true"
+          class="w-5 h-5 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
+        >
+        <label for="negotiable" class="text-sm font-medium text-gray-700 cursor-pointer">
+          💰 Price is negotiable
+        </label>
+      </div>
+
+      <!-- CONTACT DETAILS -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-3">
+          Contact Details <span class="text-red-500">*</span>
+        </label>
+        <input 
+          type="text" 
+          name="contact" 
+          placeholder="e.g., 9876543210 or your.email@college.edu"
+          class="w-full border-2 border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:border-indigo-500 transition"
+          required
+        >
+        <p class="text-sm text-gray-500 mt-1">Phone number or email where buyers can reach you</p>
+      </div>
+
+      <!-- IMAGE UPLOAD -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-3">
+          Item Photo <span class="text-gray-400">(Optional)</span>
+        </label>
+        <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-indigo-500 transition">
+          <input 
+            type="file" 
+            name="image" 
+            accept="image/*"
+            id="image-upload"
+            class="hidden"
+            onchange="previewImage(event)"
+          >
+          <label for="image-upload" class="cursor-pointer">
+            <div class="text-4xl mb-2">📸</div>
+            <p class="text-gray-600 font-medium">Click to upload image</p>
+            <p class="text-sm text-gray-500 mt-1">PNG, JPG, GIF up to 5MB</p>
+          </label>
+          <div id="image-preview" class="mt-4"></div>
+        </div>
+      </div>
+
+      <!-- INFO BOX -->
+      <div class="bg-blue-50 border-l-4 border-blue-500 p-4 rounded">
+        <p class="text-sm text-blue-800">
+          <strong>💡 Pro Tips:</strong>
+        </p>
+        <ul class="text-sm text-blue-800 mt-2 space-y-1 ml-4 list-disc">
+          <li>Items with clear photos sell 3x faster</li>
+          <li>Detailed descriptions build buyer trust</li>
+          <li>Competitive pricing attracts more interest</li>
+        </ul>
+      </div>
+
+      <!-- SUBMIT BUTTONS -->
+      <div class="flex gap-4 pt-4">
+        <button 
+          type="submit" 
+          class="flex-1 bg-green-600 text-white py-3 rounded-lg hover:bg-green-700 transition font-semibold text-lg shadow-md hover:shadow-lg"
+        >
+          ✅ Publish Item
+        </button>
+        <a 
+          href="/dashboard" 
+          class="flex-1 bg-gray-300 text-gray-800 py-3 rounded-lg hover:bg-gray-400 transition font-semibold text-lg text-center shadow-md"
+        >
+          ❌ Cancel
+        </a>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+  // Image preview functionality
+  function previewImage(event) {
+    const file = event.target.files[0];
+    const preview = document.getElementById('image-preview');
+    
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        preview.innerHTML = `
+          <div class="relative inline-block">
+            <img src="${e.target.result}" class="max-h-48 rounded-lg shadow-md" alt="Preview">
+            <p class="text-sm text-gray-600 mt-2">✓ Image selected: ${file.name}</p>
+          </div>
+        `;
+      }
+      reader.readAsDataURL(file);
+    }
+  }
+</script>
+{% endblock %}

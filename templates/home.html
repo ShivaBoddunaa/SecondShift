@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}SecondShift{% endblock %}</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-50 flex flex-col min-h-screen">
+
+<!-- NAVBAR -->
+<nav class="bg-white shadow-md sticky top-0 z-50">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex justify-between items-center h-16">
+      <a href="/" class="text-2xl font-bold text-indigo-600 hover:text-indigo-700 transition">
+        SecondShift
+      </a>
+      
+      <div class="flex space-x-6 items-center">
+        {% if user_id %}
+          <a href="/dashboard" class="text-gray-700 hover:text-indigo-600 transition font-medium">Dashboard</a>
+          <a href="/buy" class="text-gray-700 hover:text-indigo-600 transition font-medium">Browse</a>
+          <a href="/sell" class="text-gray-700 hover:text-indigo-600 transition font-medium">Sell</a>
+          <a href="/logout" class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition font-medium">
+            Logout
+          </a>
+        {% else %}
+          <a href="/login" class="text-gray-700 hover:text-indigo-600 transition font-medium">Login</a>
+          <a href="/signup" class="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition font-medium">
+            Sign Up
+          </a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- MAIN CONTENT -->
+<main class="flex-grow container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+  {% block content %}{% endblock %}
+</main>
+
+<!-- FOOTER -->
+<footer class="bg-white border-t border-gray-200 mt-12">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <div>
+        <h3 class="text-lg font-bold text-indigo-600 mb-4">SecondShift</h3>
+        <p class="text-gray-600">Your college marketplace for buying and selling items.</p>
+      </div>
+      <div>
+        <h4 class="font-semibold text-gray-900 mb-4">Quick Links</h4>
+        <ul class="space-y-2 text-gray-600">
+          <li><a href="/buy" class="hover:text-indigo-600 transition">Browse Items</a></li>
+          <li><a href="/sell" class="hover:text-indigo-600 transition">Sell Items</a></li>
+          <li><a href="/dashboard" class="hover:text-indigo-600 transition">Dashboard</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4 class="font-semibold text-gray-900 mb-4">About</h4>
+        <p class="text-gray-600 text-sm">SecondShift is a peer-to-peer marketplace for college students to buy and sell items within their campus community.</p>
+      </div>
+    </div>
+    <div class="border-t border-gray-200 mt-8 pt-8 text-center text-gray-600">
+      <p>&copy; 2026 SecondShift. All rights reserved.</p>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
+

@@ -1,0 +1,128 @@
+{% extends "home.html" %}
+{% block title %}Browse & Buy · SecondShift{% endblock %}
+
+{% block content %}
+<div class="py-8">
+  <div class="max-w-7xl mx-auto">
+    <!-- HEADER -->
+    <div class="mb-10">
+      <h1 class="text-4xl md:text-5xl font-bold text-gray-900 mb-2">Browse Items</h1>
+      <p class="text-lg text-gray-600">Discover great deals from students on campus</p>
+    </div>
+
+    <!-- ITEMS GRID OR EMPTY STATE -->
+    {% if items %}
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        {% for item in items %}
+        <div class="bg-white rounded-xl shadow-md hover:shadow-xl transition overflow-hidden group border border-gray-200">
+          
+          <!-- IMAGE -->
+          <div class="relative bg-gradient-to-br from-gray-200 to-gray-300 h-48 flex items-center justify-center overflow-hidden">
+            {% if item.image_url %}
+              <img src="{{ item.image_url }}" alt="{{ item.title }}" class="w-full h-full object-cover">
+            {% else %}
+              <div class="text-6xl opacity-50">📦</div>
+            {% endif %}
+            
+            {% if item.negotiable %}
+            <div class="absolute top-3 right-3 bg-green-600 text-white px-3 py-1 rounded-full text-xs font-semibold">
+              💰 Negotiable
+            </div>
+            {% endif %}
+          </div>
+
+          <!-- CONTENT -->
+          <div class="p-4">
+            <!-- TITLE -->
+            <h3 class="font-bold text-lg text-gray-900 mb-2 line-clamp-2 group-hover:text-indigo-600 transition">
+              {{ item.title }}
+            </h3>
+
+            <!-- DESCRIPTION -->
+            {% if item.description %}
+            <p class="text-sm text-gray-600 mb-3 line-clamp-2">
+              {{ item.description }}
+            </p>
+            {% endif %}
+
+            <!-- PRICE -->
+            <div class="mb-3 flex items-baseline gap-2">
+              <span class="text-3xl font-bold text-indigo-600">₹{{ item.price }}</span>
+              {% if item.negotiable %}
+              <span class="text-xs text-green-600 font-medium">(Negotiable)</span>
+              {% endif %}
+            </div>
+
+            <!-- SELLER INFO -->
+            <div class="border-t border-gray-200 pt-3 mb-4 space-y-2">
+              <div class="flex items-center gap-2">
+                <span class="text-sm font-semibold text-gray-700">Seller:</span>
+                <span class="text-sm text-gray-900">{{ item.seller_email }}</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="text-sm font-semibold text-gray-700">College:</span>
+                <span class="text-sm text-gray-900">{{ item.seller_college }}</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="text-sm font-semibold text-gray-700">Contact:</span>
+                <span class="text-sm text-indigo-600 font-medium">{{ item.contact }}</span>
+              </div>
+            </div>
+
+            <!-- ACTION BUTTONS -->
+            <div class="space-y-2">
+              <!-- Email Contact Button -->
+              <a 
+                href="mailto:{{ item.seller_email }}?subject=Interested in {{ item.title }}&body=Hi, I'm interested in your item: {{ item.title }} (₹{{ item.price }})" 
+                class="block w-full bg-indigo-600 text-white py-2 rounded-lg hover:bg-indigo-700 transition font-semibold text-center text-sm"
+              >
+                📧 Email Seller
+              </a>
+              
+              <!-- Phone/WhatsApp Contact Button -->
+              {% if item.contact %}
+              <a 
+                href="tel:{{ item.contact }}" 
+                class="block w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition font-semibold text-center text-sm"
+              >
+                📞 Call: {{ item.contact }}
+              </a>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      
+      <!-- ITEMS COUNT -->
+      <div class="mt-8 text-center">
+        <p class="text-gray-600">
+          Showing <strong>{{ items|length }}</strong> item{% if items|length != 1 %}s{% endif %}
+        </p>
+      </div>
+      
+    {% else %}
+      <!-- EMPTY STATE -->
+      <div class="flex flex-col items-center justify-center py-20 px-4">
+        <div class="text-8xl mb-6 opacity-30">📭</div>
+        <h2 class="text-3xl font-bold text-gray-900 mb-3">No Items Available</h2>
+        <p class="text-lg text-gray-600 mb-8 text-center max-w-md">
+          Be the first to list an item and start selling on SecondShift!
+        </p>
+        <a href="/sell" class="bg-green-600 text-white px-8 py-3 rounded-lg hover:bg-green-700 transition font-semibold text-lg shadow-lg">
+          📦 List Your First Item
+        </a>
+      </div>
+    {% endif %}
+  </div>
+</div>
+
+<style>
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+</style>
+{% endblock %}

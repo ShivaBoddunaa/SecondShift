@@ -1,0 +1,49 @@
+{% extends "home.html" %}
+{% block title %}Login · SecondShift{% endblock %}
+
+{% block content %}
+<div class="min-h-screen flex items-center justify-center px-4">
+  <div class="w-full max-w-md bg-white p-8 rounded-2xl shadow-xl">
+    <div class="text-center mb-8">
+      <h1 class="text-4xl font-bold text-indigo-600 mb-2">SecondShift</h1>
+      <h2 class="text-2xl font-bold text-gray-900">Welcome Back</h2>
+      <p class="text-gray-600 mt-2">Sign in to your college marketplace account</p>
+    </div>
+
+    {% if error %}
+    <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-6">
+      {{ error }}
+    </div>
+    {% endif %}
+
+    <form method="post" action="/login" class="space-y-4">
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-2">College Email</label>
+        <input type="email" name="email" placeholder="you@college.edu"
+          class="w-full border-2 border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:border-indigo-500 transition"
+          required>
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-2">Password</label>
+        <input type="password" name="password" placeholder="••••••••"
+          class="w-full border-2 border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:border-indigo-500 transition"
+          required>
+      </div>
+
+      <button type="submit" class="w-full bg-indigo-600 text-white py-3 rounded-lg hover:bg-indigo-700 transition font-semibold text-lg">
+        Sign In
+      </button>
+    </form>
+
+    <div class="mt-6 pt-6 border-t border-gray-200">
+      <p class="text-center text-gray-600">
+        New here?
+        <a href="/signup" class="text-indigo-600 font-semibold hover:text-indigo-700 transition">Create account</a>
+      </p>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+

@@ -1,0 +1,66 @@
+{% extends "home.html" %}
+{% block title %}Dashboard · SecondShift{% endblock %}
+
+{% block content %}
+<div class="py-12">
+  <div class="max-w-7xl mx-auto">
+    <!-- HEADER -->
+    <div class="mb-12 text-center">
+      <h1 class="text-4xl md:text-5xl font-bold text-gray-900 mb-4">Welcome to SecondShift</h1>
+      <p class="text-xl text-gray-600">Your college marketplace for buying and selling</p>
+    </div>
+
+    <!-- MAIN ACTION CARDS -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
+      
+      <!-- SELL CARD -->
+      <a href="/sell" class="group">
+        <div class="bg-gradient-to-br from-green-50 to-green-100 rounded-2xl shadow-lg hover:shadow-2xl transition transform hover:scale-105 p-8 h-full flex flex-col justify-center items-center">
+          <div class="text-6xl mb-4 transform group-hover:scale-110 transition">📸</div>
+          <h2 class="text-3xl font-bold text-gray-900 mb-2">Sell Item</h2>
+          <p class="text-gray-700 text-center text-lg">List your items and connect with buyers on campus</p>
+          <div class="mt-6 bg-green-600 text-white px-8 py-3 rounded-lg font-semibold group-hover:bg-green-700 transition">
+            Start Selling
+          </div>
+        </div>
+      </a>
+
+      <!-- BUY CARD -->
+      <a href="/buy" class="group">
+        <div class="bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl shadow-lg hover:shadow-2xl transition transform hover:scale-105 p-8 h-full flex flex-col justify-center items-center">
+          <div class="text-6xl mb-4 transform group-hover:scale-110 transition">🛍️</div>
+          <h2 class="text-3xl font-bold text-gray-900 mb-2">Browse & Buy</h2>
+          <p class="text-gray-700 text-center text-lg">Discover great deals from students in your college</p>
+          <div class="mt-6 bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold group-hover:bg-blue-700 transition">
+            Start Browsing
+          </div>
+        </div>
+      </a>
+
+    </div>
+
+    <!-- QUICK STATS / INFO SECTION -->
+    <div class="mt-16 bg-indigo-50 rounded-2xl p-8 border-2 border-indigo-200">
+      <h3 class="text-2xl font-bold text-gray-900 mb-6">How SecondShift Works</h3>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div class="text-center">
+          <div class="text-4xl font-bold text-indigo-600 mb-2">1.</div>
+          <h4 class="font-semibold text-gray-900 mb-2">List Items</h4>
+          <p class="text-gray-700">Post your items with photos, descriptions, and prices</p>
+        </div>
+        <div class="text-center">
+          <div class="text-4xl font-bold text-indigo-600 mb-2">2.</div>
+          <h4 class="font-semibold text-gray-900 mb-2">Connect</h4>
+          <p class="text-gray-700">Buyers reach out directly to discuss and arrange meetings</p>
+        </div>
+        <div class="text-center">
+          <div class="text-4xl font-bold text-indigo-600 mb-2">3.</div>
+          <h4 class="font-semibold text-gray-900 mb-2">Exchange</h4>
+          <p class="text-gray-700">Meet safely on campus and complete your transaction</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
