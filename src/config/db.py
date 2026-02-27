@@ -7,4 +7,4 @@ SUPABASE_KEY = os.getenv("SUPABASE_KEY")
 # Create Supabase client
 db: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 
-print("✅ Supabase client initialized")
+print("Supabase client initialized")
