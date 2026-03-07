@@ -9,18 +9,16 @@ load_dotenv()
 from src.routes.auth import router as auth_router
 from src.routes.pages import router as pages_router
 from src.routes.items import router as items_router
+from src.routes.dashboard import router as dashboard_router
 
 app = FastAPI()
 
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-STATIC_DIR = os.path.join(BASE_DIR, "static")
-
-if os.path.exists(STATIC_DIR):
-    app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
+app.mount("/static", StaticFiles(directory="src/static"), name="static")
 
 app.include_router(auth_router)
 app.include_router(pages_router)
 app.include_router(items_router)
+app.include_router(dashboard_router)
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 8000))

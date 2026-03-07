@@ -1,0 +1,391 @@
+{% extends "home.html" %}
+{% block title %}Admin Panel · SecondShift{% endblock %}
+
+{% block content %}
+<div class="py-[48px] bg-lightgray flex-grow">
+    <div class="page-container space-y-[32px]">
+
+        <!-- ADMIN HEADER -->
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+            <div>
+                <h1 style="font-size:32px; font-weight:800; color:#EF4444; display:flex; align-items:center; gap:10px;">
+                    <i class="fas fa-shield-alt"></i> Admin Panel
+                </h1>
+                <p class="text-graytext text-[15px] mt-1">Manage users, listings, and platform settings</p>
+            </div>
+            <a href="/dashboard" class="btn btn-secondary h-[40px] px-5 text-[14px]">← Back to Dashboard</a>
+        </div>
+
+        <!-- WARNING BANNER -->
+        <div
+            style="background:#FEF2F2; border:1px solid #FECACA; border-radius:12px; padding:16px 24px; display:flex; align-items:center; gap:12px;">
+            <i class="fas fa-exclamation-triangle text-danger text-xl"></i>
+            <p style="color:#991B1B; font-size:14px; font-weight:500;">You have admin access. Actions here affect all
+                users. Use responsibly.</p>
+        </div>
+
+        <!-- STATS ROW -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-[20px]">
+            <div class="custom-card !p-[24px] flex items-center gap-4">
+                <div
+                    style="width:48px;height:48px;border-radius:12px;background:#DBEAFE;color:#1D4ED8;display:flex;align-items:center;justify-content:center;font-size:22px;">
+                    <i class="fas fa-users"></i>
+                </div>
+                <div>
+                    <p class="text-[12px] font-semibold text-graytext uppercase tracking-wider">Total Users</p>
+                    <p class="text-[28px] font-bold text-dark leading-none mt-1">{{ admin_stats.total_users }}</p>
+                </div>
+            </div>
+            <div class="custom-card !p-[24px] flex items-center gap-4">
+                <div
+                    style="width:48px;height:48px;border-radius:12px;background:#FEF3C7;color:#D97706;display:flex;align-items:center;justify-content:center;font-size:22px;">
+                    <i class="fas fa-box"></i>
+                </div>
+                <div>
+                    <p class="text-[12px] font-semibold text-graytext uppercase tracking-wider">Total Listings</p>
+                    <p class="text-[28px] font-bold text-dark leading-none mt-1">{{ admin_stats.total_listings }}</p>
+                </div>
+            </div>
+            <div class="custom-card !p-[24px] flex items-center gap-4">
+                <div
+                    style="width:48px;height:48px;border-radius:12px;background:#DCFCE7;color:#16A34A;display:flex;align-items:center;justify-content:center;font-size:22px;">
+                    <i class="fas fa-circle" style="font-size: 14px;"></i>
+                </div>
+                <div>
+                    <p class="text-[12px] font-semibold text-graytext uppercase tracking-wider">Active Listings</p>
+                    <p class="text-[28px] font-bold text-dark leading-none mt-1">{{ admin_stats.active_listings }}</p>
+                </div>
+            </div>
+            <div class="custom-card !p-[24px] flex items-center gap-4">
+                <div
+                    style="width:48px;height:48px;border-radius:12px;background:#FEE2E2;color:#DC2626;display:flex;align-items:center;justify-content:center;font-size:22px;">
+                    <i class="fas fa-plus"></i>
+                </div>
+                <div>
+                    <p class="text-[12px] font-semibold text-graytext uppercase tracking-wider">New Today</p>
+                    <p class="text-[28px] font-bold text-dark leading-none mt-1">{{ admin_stats.new_today }}</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- ALL LISTINGS TABLE -->
+        <div class="custom-card !p-0 overflow-hidden">
+            <div class="px-[24px] py-[20px] border-b border-[#E2E8F0] bg-[#F8FAFC] flex justify-between items-center">
+                <h2 style="font-size:18px; font-weight:700; color:#0F172A;">All Listings ({{ all_items|length }})</h2>
+            </div>
+
+            {% if all_items and all_items|length > 0 %}
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse min-w-[900px]">
+                    <thead>
+                        <tr
+                            class="bg-white text-graytext text-[12px] uppercase tracking-wider border-b border-[#E2E8F0]">
+                            <th class="px-[24px] py-[14px] font-semibold">Item</th>
+                            <th class="px-[24px] py-[14px] font-semibold">Seller</th>
+                            <th class="px-[24px] py-[14px] font-semibold">College</th>
+                            <th class="px-[24px] py-[14px] font-semibold">Price</th>
+                            <th class="px-[24px] py-[14px] font-semibold">Date</th>
+                            <th class="px-[24px] py-[14px] font-semibold text-right">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-[#E2E8F0] bg-white">
+                        {% for item in all_items %}
+                        <tr class="hover:bg-lightgray transition-colors group" id="item-row-{{ item.id }}">
+                            <td class="px-[24px] py-[14px]">
+                                <div class="flex items-center gap-3">
+                                    <div
+                                        style="width:40px;height:40px;border-radius:8px;background:#F1F5F9;display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0;border:1px solid #E2E8F0;">
+                                        {% if item.image_url %}
+                                        <img src="{{ item.image_url }}" alt=""
+                                            style="width:100%;height:100%;object-fit:cover;">
+                                        {% else %}
+                                        <span style="font-size:16px;opacity:0.4;"><i class="fas fa-box"></i></span>
+                                        {% endif %}
+                                    </div>
+                                    <span class="font-semibold text-[14px] text-dark truncate max-w-[180px]">{{
+                                        item.title }}</span>
+                                </div>
+                            </td>
+                            <td class="px-[24px] py-[14px] text-[13px] text-graytext font-medium">{{ item.seller_email
+                                or 'N/A' }}</td>
+                            <td class="px-[24px] py-[14px] text-[13px] text-graytext font-medium">{{ item.seller_college
+                                or 'N/A' }}</td>
+                            <td class="px-[24px] py-[14px] text-[15px] font-bold text-dark">₹{{ item.price }}</td>
+                            <td class="px-[24px] py-[14px] text-[13px] text-graytext font-medium">{{ item.formatted_date
+                                or 'N/A' }}</td>
+                            <td class="px-[24px] py-[14px] text-right">
+                                <div class="flex justify-end gap-2">
+                                    <button onclick='openEditModal({{ item | tojson | safe }})'
+                                        style="background:#0D9488;color:white;padding:6px 14px;border-radius:6px;border:none;cursor:pointer;font-size:12px;font-weight:600;">
+                                        <i class="fas fa-pen"></i> Edit
+                                    </button>
+                                    <button onclick="adminDeleteItem('{{ item.id }}')"
+                                        style="background:#EF4444;color:white;padding:6px 14px;border-radius:6px;border:none;cursor:pointer;font-size:12px;font-weight:600;">
+                                        <i class="fas fa-trash"></i> Delete
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="py-12 text-center text-graytext">No listings yet.</div>
+            {% endif %}
+        </div>
+
+        <!-- ALL USERS TABLE -->
+        <div class="custom-card !p-0 overflow-hidden">
+            <div class="px-[24px] py-[20px] border-b border-[#E2E8F0] bg-[#F8FAFC]">
+                <h2 style="font-size:18px; font-weight:700; color:#0F172A;">All Users ({{ all_users|length }})</h2>
+            </div>
+
+            {% if all_users and all_users|length > 0 %}
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse min-w-[800px]">
+                    <thead>
+                        <tr
+                            class="bg-white text-graytext text-[12px] uppercase tracking-wider border-b border-[#E2E8F0]">
+                            <th class="px-[24px] py-[14px] font-semibold">Name</th>
+                            <th class="px-[24px] py-[14px] font-semibold">Email</th>
+                            <th class="px-[24px] py-[14px] font-semibold">College</th>
+                            <th class="px-[24px] py-[14px] font-semibold">Role</th>
+                            <th class="px-[24px] py-[14px] font-semibold">Joined</th>
+                            <th class="px-[24px] py-[14px] font-semibold text-right">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-[#E2E8F0] bg-white">
+                        {% for u in all_users %}
+                        <tr class="hover:bg-lightgray transition-colors" id="user-row-{{ u.id }}">
+                            <td class="px-[24px] py-[14px]">
+                                <div class="flex items-center gap-3">
+                                    <div
+                                        style="width:36px;height:36px;border-radius:50%;background:#0D9488;color:white;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;flex-shrink:0;">
+                                        {{ (u.fullname or u.email or '?')[0]|upper }}
+                                    </div>
+                                    <span class="font-semibold text-[14px] text-dark">{{ u.fullname or
+                                        u.email.split('@')[0] }}</span>
+                                </div>
+                            </td>
+                            <td class="px-[24px] py-[14px] text-[13px] text-graytext font-medium">{{ u.email }}</td>
+                            <td class="px-[24px] py-[14px] text-[13px] text-graytext font-medium">{{ u.college or 'N/A'
+                                }}</td>
+                            <td class="px-[24px] py-[14px]">
+                                {% if u.role == 'admin' %}
+                                <span
+                                    style="background:#FEE2E2;color:#DC2626;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;">
+                                    <i class="fas fa-shield-alt"></i> Admin</span>
+                                {% else %}
+                                <span
+                                    style="background:#DCFCE7;color:#16A34A;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;">User</span>
+                                {% endif %}
+                            </td>
+                            <td class="px-[24px] py-[14px] text-[13px] text-graytext font-medium">{{ u.formatted_date or
+                                'N/A' }}</td>
+                            <td class="px-[24px] py-[14px] text-right">
+                                <div class="flex justify-end gap-2">
+                                    {% if u.role == 'user' %}
+                                    <button onclick="toggleRole('{{ u.id }}', 'admin')"
+                                        style="background:#DBEAFE;color:#1D4ED8;padding:5px 12px;border-radius:6px;border:none;cursor:pointer;font-size:11px;font-weight:600;">
+                                        Make Admin
+                                    </button>
+                                    {% elif u.role == 'admin' %}
+                                    <button onclick="toggleRole('{{ u.id }}', 'user')"
+                                        style="background:#FEF3C7;color:#D97706;padding:5px 12px;border-radius:6px;border:none;cursor:pointer;font-size:11px;font-weight:600;">
+                                        Remove Admin
+                                    </button>
+                                    {% endif %}
+                                    <button onclick="deleteUser('{{ u.id }}')"
+                                        style="background:#FEE2E2;color:#DC2626;padding:5px 12px;border-radius:6px;border:none;cursor:pointer;font-size:11px;font-weight:600;">
+                                        Delete
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="py-12 text-center text-graytext">No users found.</div>
+            {% endif %}
+        </div>
+
+        <!-- RECENT SIGNUPS -->
+        <div class="custom-card">
+            <h2 style="font-size:18px; font-weight:700; color:#0F172A; margin-bottom:20px;"><i
+                    class="fas fa-bolt text-amber-500"></i> Recent Signups</h2>
+            {% if recent_users and recent_users|length > 0 %}
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
+                {% for ru in recent_users %}
+                <div
+                    style="background:#F8FAFC; border:1px solid #E2E8F0; border-radius:12px; padding:16px; text-align:center;">
+                    <div
+                        style="width:40px;height:40px;border-radius:50%;background:#0D9488;color:white;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:15px;margin:0 auto 8px;">
+                        {{ (ru.fullname or ru.email or '?')[0]|upper }}
+                    </div>
+                    <p
+                        style="font-weight:600; font-size:13px; color:#0F172A; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
+                        {{ ru.fullname or ru.email.split('@')[0] }}</p>
+                    <p
+                        style="font-size:11px; color:#64748B; margin-top:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
+                        {{ ru.email }}</p>
+                    <p style="font-size:11px; color:#94A3B8; margin-top:4px;">{{ ru.formatted_date or 'Recently' }}</p>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <p class="text-graytext text-center py-6">No recent signups.</p>
+            {% endif %}
+        </div>
+
+    </div>
+</div>
+
+<!-- ADMIN ITEM EDIT MODAL -->
+<div id="adminEditModal"
+    style="display:none; position:fixed; inset:0; background:rgba(15, 23, 42, 0.9); backdrop-filter: blur(12px); z-index:1000; align-items:center; justify-content:center; padding: 20px;">
+    <div class="custom-card w-full max-w-[500px] !p-0 overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.5)] border-none">
+        <div class="bg-[#F8FAFC] border-b border-[#E2E8F0] px-8 py-6 flex justify-between items-center">
+            <div>
+                <h3 class="text-xl font-extrabold text-danger tracking-tight"><i class="fas fa-shield-alt"></i> Admin
+                    Edit</h3>
+                <p class="text-[13px] text-graytext font-medium mt-1">You are overriding another user's content</p>
+            </div>
+            <button onclick="closeAdminEditModal()"
+                class="text-graytext hover:text-dark transition p-2 hover:bg-white rounded-full">
+                <i class="fas fa-times text-xl"></i>
+            </button>
+        </div>
+        <form id="adminEditForm" class="p-8 space-y-6">
+            <input type="hidden" id="edit-item-id">
+            <div>
+                <label class="label-text">Product Title</label>
+                <input type="text" id="edit-item-title" required class="form-input !py-3">
+            </div>
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label class="label-text">Price (₹)</label>
+                    <input type="number" id="edit-item-price" required class="form-input !py-3 font-bold text-primary">
+                </div>
+                <div>
+                    <label class="label-text">Contact Info</label>
+                    <input type="text" id="edit-item-contact" required class="form-input !py-3">
+                </div>
+            </div>
+            <div>
+                <label class="label-text">Description</label>
+                <textarea id="edit-item-description" rows="3" class="form-input !py-3 resize-none"></textarea>
+            </div>
+            <div class="pt-4 flex gap-4">
+                <button type="button" onclick="closeAdminEditModal()"
+                    class="flex-1 btn btn-secondary !bg-lightgray !border-transparent !text-dark">Cancel</button>
+                <button type="submit" id="saveAdminBtn"
+                    class="flex-1 btn bg-danger text-white hover:bg-red-700 h-[52px] font-extrabold">Save
+                    Override</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    function adminDeleteItem(itemId) {
+        softConfirm(
+            '<span class="text-danger"><i class="fas fa-shield-alt"></i> Admin Delete?</span>',
+            'You are about to permanently remove another user\'s listing. This action cannot be undone.',
+            () => {
+                fetch('/item/' + itemId + '/delete', { method: 'DELETE' })
+                    .then(res => {
+                        if (res.ok) {
+                            const row = document.getElementById('item-row-' + itemId);
+                            if (row) row.remove();
+                        } else {
+                            res.json().then(data => softAlert('Error', data.detail || 'Delete failed', 'danger'));
+                        }
+                    });
+            }
+        );
+    }
+
+    function toggleRole(userId, newRole) {
+        softConfirm(
+            'Change Role?',
+            'Are you sure you want to change this user\'s role to ' + newRole + '?',
+            () => {
+                fetch('/admin/user/' + userId + '/role', {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ role: newRole })
+                }).then(res => {
+                    if (res.ok) location.reload();
+                    else res.json().then(data => softAlert('Error', data.detail || 'Failed', 'danger'));
+                });
+            },
+            'info'
+        );
+    }
+
+    function deleteUser(userId) {
+        softConfirm(
+            '<span class="text-danger"><i class="fas fa-user-slash"></i> Delete User?</span>',
+            'This will permanently remove the user and all their listings. Continue?',
+            () => {
+                fetch('/admin/user/' + userId, { method: 'DELETE' })
+                    .then(res => {
+                        if (res.ok) {
+                            const row = document.getElementById('user-row-' + userId);
+                            if (row) row.remove();
+                        } else {
+                            res.json().then(data => softAlert('Error', data.detail || 'Delete failed', 'danger'));
+                        }
+                    });
+            }
+        );
+    }
+
+    // ADMIN EDIT MODAL LOGIC
+    function openEditModal(item) {
+        document.getElementById('edit-item-id').value = item.id;
+        document.getElementById('edit-item-title').value = item.title;
+        document.getElementById('edit-item-price').value = item.price;
+        document.getElementById('edit-item-contact').value = item.contact || '';
+        document.getElementById('edit-item-description').value = item.description || '';
+        document.getElementById('adminEditModal').style.display = 'flex';
+    }
+
+    function closeAdminEditModal() {
+        document.getElementById('adminEditModal').style.display = 'none';
+    }
+
+    document.getElementById('adminEditForm').onsubmit = function (e) {
+        e.preventDefault();
+        const id = document.getElementById('edit-item-id').value;
+        const saveBtn = document.getElementById('saveAdminBtn');
+        saveBtn.disabled = true;
+        saveBtn.textContent = 'Saving...';
+
+        const formData = new FormData();
+        formData.append('title', document.getElementById('edit-item-title').value);
+        formData.append('price', document.getElementById('edit-item-price').value);
+        formData.append('contact', document.getElementById('edit-item-contact').value);
+        formData.append('description', document.getElementById('edit-item-description').value);
+
+        fetch('/item/' + id, {
+            method: 'PUT',
+            body: formData
+        })
+            .then(res => {
+                if (res.ok) {
+                    location.reload();
+                } else {
+                    res.json().then(data => {
+                        softAlert('Update Failed', data.detail || 'Failed to save changes', 'danger');
+                        saveBtn.disabled = false;
+                        saveBtn.textContent = 'Save Override';
+                    });
+                }
+            });
+    };
+</script>
+{% endblock %}

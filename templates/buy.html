@@ -2,127 +2,756 @@
 {% block title %}Browse & Buy · SecondShift{% endblock %}
 
 {% block content %}
-<div class="py-8">
-  <div class="max-w-7xl mx-auto">
-    <!-- HEADER -->
-    <div class="mb-10">
-      <h1 class="text-4xl md:text-5xl font-bold text-gray-900 mb-2">Browse Items</h1>
-      <p class="text-lg text-gray-600">Discover great deals from students on campus</p>
-    </div>
+<div class="py-[64px] bg-lightgray flex-grow h-full">
+  <div class="page-container flex flex-col lg:flex-row gap-[24px]">
 
-    <!-- ITEMS GRID OR EMPTY STATE -->
-    {% if items %}
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+    <!-- LEFT SIDEBAR (NexBuild Redesign) -->
+    <aside class="w-full lg:w-[240px] flex-shrink-0">
+      <form id="filterForm" action="/buy" method="GET" class="sidebar">
+
+        <!-- Search Area -->
+        <div class="sidebar-section">
+          <div class="sidebar-search">
+            <i class="fas fa-search"></i>
+            <input type="text" name="search" value="{{ search or '' }}" placeholder="Search items..."
+              onkeypress="if(event.key==='Enter'){ this.form.submit(); }">
+          </div>
+        </div>
+
+        {% set current_cat = category|lower if category else 'all' %}
+        <!-- Category Section -->
+        <div class="sidebar-group-label">CATEGORY</div>
+        <div class="sidebar-section">
+          <input type="hidden" name="category" id="filter_category" value="{{ category or 'all' }}">
+
+          <button type="button" onclick="applyLinkFilter('category', 'all')"
+            class="sidebar-item {% if current_cat == 'all' %}active{% endif %}">
+            <i class="fas fa-border-all"></i>
+            <span>All Items</span>
+          </button>
+
+          {% set cat_icons = {
+          'books': 'fa-book',
+          'electronics': 'fa-laptop',
+          'furniture': 'fa-chair',
+          'clothing': 'fa-tshirt',
+          'gaming': 'fa-gamepad',
+          'mobiles': 'fa-mobile-alt',
+          'music': 'fa-guitar',
+          'other': 'fa-box'
+          } %}
+
+          {% for cat_id, icon in cat_icons.items() %}
+          <button type="button" onclick="applyLinkFilter('category', '{{ cat_id }}')"
+            class="sidebar-item {% if current_cat == cat_id %}active{% endif %}">
+            <i class="fas {{ icon }}"></i>
+            <span>{{ cat_id|capitalize }}</span>
+          </button>
+          {% endfor %}
+        </div>
+
+        <!-- Price Section -->
+        <div class="sidebar-group-label">PRICE RANGE (₹)</div>
+        <div class="sidebar-section">
+          <div class="price-inputs">
+            <input type="number" name="min_price" value="{{ min_price or '' }}" placeholder="Min"
+              onchange="this.form.submit()">
+            <span>-</span>
+            <input type="number" name="max_price" value="{{ max_price or '' }}" placeholder="Max"
+              onchange="this.form.submit()">
+          </div>
+        </div>
+
+        {% set current_cond = condition if condition else '' %}
+        <!-- Condition Section -->
+        <div class="sidebar-group-label">CONDITION</div>
+        <div class="sidebar-section">
+          <input type="hidden" name="condition" id="filter_condition" value="{{ condition or '' }}">
+          {% for cond in ['New', 'Like New', 'Good', 'Fair'] %}
+          <button type="button" onclick="applyLinkFilter('condition', '{{ cond }}')"
+            class="sidebar-item {% if current_cond == cond %}active{% endif %}">
+            <i
+              class="fas {% if cond=='New' %}fa-star{% elif cond=='Like New' %}fa-thumbs-up{% elif cond=='Good' %}fa-check-circle{% else %}fa-tools{% endif %}"></i>
+            <span>{{ cond }}</span>
+          </button>
+          {% endfor %}
+        </div>
+
+        {% set current_sort = sort or 'newest' %}
+        <!-- Sort Section -->
+        <div class="sidebar-group-label">SORT BY</div>
+        <div class="sidebar-section">
+          <input type="hidden" name="sort" id="filter_sort" value="{{ current_sort }}">
+          <button type="button" onclick="applyLinkFilter('sort', 'newest')"
+            class="sidebar-item {% if current_sort == 'newest' %}active{% endif %}">
+            <i class="fas fa-clock"></i>
+            <span>Newest First</span>
+          </button>
+          <button type="button" onclick="applyLinkFilter('sort', 'price_asc')"
+            class="sidebar-item {% if current_sort == 'price_asc' %}active{% endif %}">
+            <i class="fas fa-sort-amount-up"></i>
+            <span>Price: Low to High</span>
+          </button>
+          <button type="button" onclick="applyLinkFilter('sort', 'price_desc')"
+            class="sidebar-item {% if current_sort == 'price_desc' %}active{% endif %}">
+            <i class="fas fa-sort-amount-down"></i>
+            <span>Price: High to Low</span>
+          </button>
+        </div>
+
+        <!-- Clear Button -->
+        <div class="sidebar-section">
+          <a href="/buy" class="sidebar-clear">
+            <i class="fas fa-times-circle"></i>
+            <span>Clear All Filters</span>
+          </a>
+        </div>
+
+      </form>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="flex-1 min-w-0">
+      <div class="mb-[32px] flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div>
+          <h1 class="section-heading tracking-tight leading-tight">Browse Items</h1>
+          <p class="text-caption mt-1 text-[14px]">Showing {{ items|length }} item{% if items|length != 1 %}s{% endif %}
+          </p>
+        </div>
+        <button onclick="window.scrollTo({top: 0, behavior: 'smooth'})"
+          class="lg:hidden btn btn-secondary w-full sm:w-auto px-4 py-2 border-[#E2E8F0] text-dark bg-white shadow-sm hover:bg-lightgray">
+          <svg class="h-4 w-4 inline-block mr-1 -mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+          </svg>
+          Filters
+        </button>
+      </div>
+
+      <!-- ITEMS GRID -->
+      <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-[20px] auto-rows-fr">
         {% for item in items %}
-        <div class="bg-white rounded-xl shadow-md hover:shadow-xl transition overflow-hidden group border border-gray-200">
-          
-          <!-- IMAGE -->
-          <div class="relative bg-gradient-to-br from-gray-200 to-gray-300 h-48 flex items-center justify-center overflow-hidden">
+        <div id="item-card-{{ item.id }}"
+          class="custom-card !p-0 overflow-hidden flex flex-col relative group h-full transition-all duration-300 {% if item.status == 'sold' %}opacity-70{% endif %}">
+
+          <button
+            class="absolute top-[12px] right-[12px] z-10 bg-white rounded-full p-[6px] text-graytext hover:text-danger shadow-sm transition">
+            <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24">
+              <path
+                d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+            </svg>
+          </button>
+
+          <div
+            class="relative bg-lightgray h-[200px] flex items-center justify-center overflow-hidden flex-shrink-0 border-b border-[#E2E8F0]">
             {% if item.image_url %}
-              <img src="{{ item.image_url }}" alt="{{ item.title }}" class="w-full h-full object-cover">
+            <img src="{{ item.image_url }}" alt="{{ item.title }}"
+              class="w-full h-full object-cover group-hover:scale-[1.03] transition duration-300">
             {% else %}
-              <div class="text-6xl opacity-50">📦</div>
-            {% endif %}
-            
-            {% if item.negotiable %}
-            <div class="absolute top-3 right-3 bg-green-600 text-white px-3 py-1 rounded-full text-xs font-semibold">
-              💰 Negotiable
+            <div class="w-full h-full img-fallback group-hover:scale-[1.03] transition duration-300">
+              <svg class="w-12 h-12 text-[#94A3B8]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                  d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                  d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
+              </svg>
             </div>
             {% endif %}
+
+            <!-- SOLD OVERLAY -->
+            {% if item.status == 'sold' %}
+            <div class="absolute inset-0 bg-dark/40 flex items-center justify-center z-10 backdrop-blur-[2px]">
+              <div
+                class="bg-gray-600 text-white font-black text-2xl px-8 py-2 rotate-[-15deg] shadow-2xl border-4 border-white/30 uppercase tracking-widest">
+                SOLD
+              </div>
+            </div>
+            {% endif %}
+
+            <div class="absolute top-[12px] left-[12px] flex flex-col gap-[6px]">
+              {% if item.category %}
+              <span class="badge-category glass-badge">{{ item.category }}</span>
+              {% endif %}
+              {% if item.condition %}
+              {% if item.condition == 'New' %}
+              <span class="badge-cond-new">{{ item.condition }}</span>
+              {% elif item.condition == 'Like New' %}
+              <span class="badge-cond-like-new">{{ item.condition }}</span>
+              {% elif item.condition == 'Good' %}
+              <span class="badge-cond-good">{{ item.condition }}</span>
+              {% else %}
+              <span class="badge-cond-fair">{{ item.condition }}</span>
+              {% endif %}
+              {% endif %}
+            </div>
           </div>
 
-          <!-- CONTENT -->
-          <div class="p-4">
-            <!-- TITLE -->
-            <h3 class="font-bold text-lg text-gray-900 mb-2 line-clamp-2 group-hover:text-indigo-600 transition">
+          <div class="p-[20px] flex flex-col flex-grow">
+            <h3 id="display-title-{{ item.id }}"
+              class="card-title text-dark mb-1 leading-tight line-clamp-2 group-hover:text-primary transition min-h-[44px]">
               {{ item.title }}
             </h3>
 
-            <!-- DESCRIPTION -->
-            {% if item.description %}
-            <p class="text-sm text-gray-600 mb-3 line-clamp-2">
-              {{ item.description }}
-            </p>
-            {% endif %}
-
-            <!-- PRICE -->
-            <div class="mb-3 flex items-baseline gap-2">
-              <span class="text-3xl font-bold text-indigo-600">₹{{ item.price }}</span>
+            <div class="mb-3 flex items-baseline gap-2 mt-2">
+              <span class="text-[22px] font-bold text-primary tracking-tight">₹<span id="display-price-{{ item.id }}">{{
+                  item.price }}</span></span>
               {% if item.negotiable %}
-              <span class="text-xs text-green-600 font-medium">(Negotiable)</span>
+              <span class="text-[12px] uppercase font-bold text-graytext tracking-wider">OBO</span>
               {% endif %}
             </div>
 
-            <!-- SELLER INFO -->
-            <div class="border-t border-gray-200 pt-3 mb-4 space-y-2">
-              <div class="flex items-center gap-2">
-                <span class="text-sm font-semibold text-gray-700">Seller:</span>
-                <span class="text-sm text-gray-900">{{ item.seller_email }}</span>
-              </div>
-              <div class="flex items-center gap-2">
-                <span class="text-sm font-semibold text-gray-700">College:</span>
-                <span class="text-sm text-gray-900">{{ item.seller_college }}</span>
-              </div>
-              <div class="flex items-center gap-2">
-                <span class="text-sm font-semibold text-gray-700">Contact:</span>
-                <span class="text-sm text-indigo-600 font-medium">{{ item.contact }}</span>
+            <div class="mt-auto pt-4 mb-[16px] border-t border-[#E2E8F0] border-dashed">
+              <div class="flex items-center gap-2 text-graytext">
+                <svg class="w-4 h-4 text-[#94A3B8]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                </svg>
+                <span class="text-[13px] font-medium truncate">{{ item.seller_college or 'Campus' }}</span>
               </div>
             </div>
 
-            <!-- ACTION BUTTONS -->
-            <div class="space-y-2">
-              <!-- Email Contact Button -->
-              <a 
-                href="mailto:{{ item.seller_email }}?subject=Interested in {{ item.title }}&body=Hi, I'm interested in your item: {{ item.title }} (₹{{ item.price }})" 
-                class="block w-full bg-indigo-600 text-white py-2 rounded-lg hover:bg-indigo-700 transition font-semibold text-center text-sm"
-              >
-                📧 Email Seller
-              </a>
-              
-              <!-- Phone/WhatsApp Contact Button -->
-              {% if item.contact %}
-              <a 
-                href="tel:{{ item.contact }}" 
-                class="block w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition font-semibold text-center text-sm"
-              >
-                📞 Call: {{ item.contact }}
+            <!-- ROLE-BASED ACTION BUTTONS -->
+            <div class="mt-auto">
+              {% if current_user %}
+              {% set is_admin = current_user.role == "admin" %}
+              {% set user_id = current_user.id|string %}
+
+              <div class="flex flex-wrap gap-2 mt-2">
+                {% if is_admin %}
+                <button onclick='openEditModal({{ item | tojson | safe }})'
+                  class="flex-1 btn btn-secondary h-10 text-[13px] border-[#E2E8F0] hover:bg-white hover:border-primary transition font-bold flex items-center justify-center gap-1.5 shadow-sm">
+                  <i class="fas fa-shield-alt"></i> Admin Edit
+                </button>
+                <button onclick="confirmDelete('{{ item.id }}', true)"
+                  class="flex-1 btn btn-secondary h-10 text-[13px] border-[#E2E8F0] hover:bg-red-50 hover:text-danger hover:border-danger/30 transition font-bold flex items-center justify-center gap-1.5 shadow-sm">
+                  <i class="fas fa-trash"></i> Delete
+                </button>
+                {% elif user_id == item.seller_id|string %}
+                <button onclick='openEditModal({{ item | tojson | safe }})'
+                  class="flex-1 btn btn-secondary h-10 text-[13px] border-[#E2E8F0] hover:bg-white hover:border-primary transition font-bold flex items-center justify-center gap-1.5 shadow-sm">
+                  <i class="fas fa-pen"></i> Edit
+                </button>
+                <button onclick="confirmDelete('{{ item.id }}', false)"
+                  class="flex-1 btn btn-secondary h-10 text-[13px] border-[#E2E8F0] hover:bg-red-50 hover:text-danger hover:border-danger/30 transition font-bold flex items-center justify-center gap-1.5 shadow-sm">
+                  <i class="fas fa-trash"></i> Delete
+                </button>
+                {% if item.status != 'sold' %}
+                <button onclick="markAsSold('{{ item.id }}')"
+                  class="flex-1 btn btn-secondary h-10 text-[13px] border-[#22C55E]/20 text-success hover:bg-success hover:text-white transition font-bold flex items-center justify-center gap-1.5 shadow-sm">
+                  <i class="fas fa-check"></i> Sold
+                </button>
+                {% endif %}
+              </div>
+              {% else %}
+              <!-- Guest/Buyer Action Bar -->
+              <div class="mt-2 text-center">
+                {% if item.status == 'sold' %}
+                <button disabled
+                  class="w-full bg-graytext text-white py-2.5 rounded-lg text-sm font-bold opacity-50 cursor-not-allowed">
+                  <i class="fas fa-times"></i> Item Sold
+                </button>
+                {% else %}
+                <a href="mailto:{{ item.contact }}?subject=Interested in {{ item.title }} on SecondShift&body=Hi, I saw your {{ item.title }} listed for ₹{{ item.price }} on SecondShift. Is it still available?"
+                  style="
+                     display: flex;
+                     align-items: center;
+                     justify-content: center;
+                     gap: 8px;
+                     background: #EA4335;
+                     color: white;
+                     padding: 10px 16px;
+                     border-radius: 8px;
+                     text-decoration: none;
+                     font-weight: 600;
+                     font-size: 14px;
+                     width: 100%;
+                     transition: all 0.2s ease;
+                   " onmouseover="this.style.background='#d93025'" onmouseout="this.style.background='#EA4335'">
+                  <i class="fas fa-envelope"></i>
+                  Contact Seller
+                </a>
+                {% endif %}
+              </div>
+              {% endif %}
+              {% else %}
+              <a href="/login"
+                class="w-full bg-[#64748B] hover:bg-[#475569] text-white py-2.5 rounded-lg text-sm font-bold shadow-sm transition-all flex items-center justify-center gap-2">
+                <i class="fas fa-lock"></i> Login to Contact
               </a>
               {% endif %}
             </div>
           </div>
         </div>
+        {% else %}
+        <!-- EMPTY STATE -->
+        <div
+          class="col-span-full custom-card flex flex-col items-center justify-center py-[64px] px-[24px] border-dashed border-2">
+          <div class="text-7xl mb-[16px] opacity-30 grayscale filter blur-[1px]"><i class="fas fa-search"></i></div>
+          <p class="text-[24px] font-bold text-dark mb-[8px]">No items found</p>
+          <p class="text-graytext mb-[24px] text-center max-w-sm text-[15px]">
+            We couldn't find any items matching your current filters. Try adjusting your search criteria.
+          </p>
+          <a href="/buy" class="btn btn-primary bg-graytext hover:bg-dark">
+            Clear all filters
+          </a>
+        </div>
         {% endfor %}
       </div>
-      
-      <!-- ITEMS COUNT -->
-      <div class="mt-8 text-center">
-        <p class="text-gray-600">
-          Showing <strong>{{ items|length }}</strong> item{% if items|length != 1 %}s{% endif %}
-        </p>
-      </div>
-      
-    {% else %}
-      <!-- EMPTY STATE -->
-      <div class="flex flex-col items-center justify-center py-20 px-4">
-        <div class="text-8xl mb-6 opacity-30">📭</div>
-        <h2 class="text-3xl font-bold text-gray-900 mb-3">No Items Available</h2>
-        <p class="text-lg text-gray-600 mb-8 text-center max-w-md">
-          Be the first to list an item and start selling on SecondShift!
-        </p>
-        <a href="/sell" class="bg-green-600 text-white px-8 py-3 rounded-lg hover:bg-green-700 transition font-semibold text-lg shadow-lg">
-          📦 List Your First Item
-        </a>
-      </div>
-    {% endif %}
+    </main>
+
   </div>
 </div>
+
+<!-- ELITE EDIT MODAL -->
+<div id="editModal"
+  style="display:none; position:fixed; inset:0; background:rgba(15, 23, 42, 0.9); backdrop-filter: blur(12px); z-index:1000; align-items:center; justify-content:center; padding: 20px;">
+  <div
+    class="custom-card w-full max-w-[500px] !p-0 overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.5)] border-none animate-in fade-in zoom-in duration-300">
+    <!-- Header -->
+    <div class="bg-[#F8FAFC] border-b border-[#E2E8F0] px-8 py-6 flex justify-between items-center">
+      <div>
+        <h3 id="editModalTitle" class="text-xl font-extrabold text-dark tracking-tight">Edit Listing</h3>
+        <p class="text-[13px] text-graytext font-medium mt-1" id="editModalSubtitle">Update your item details</p>
+      </div>
+      <button onclick="closeEditModal()"
+        class="text-graytext hover:text-dark transition p-2 hover:bg-white rounded-full">
+        <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
+
+    <!-- Error Message Area -->
+    <div id="editError" style="display:none;"
+      class="mx-8 mt-6 p-3 bg-red-50 text-danger text-sm font-bold rounded-lg border border-red-100 flex items-center gap-2">
+      <i class="fas fa-exclamation-triangle"></i> <span id="editErrorText">Error message goes here</span>
+    </div>
+
+    <!-- Form Body -->
+    <form id="editForm" class="p-8 space-y-6">
+      <input type="hidden" id="edit-id">
+
+      <div>
+        <label class="label-text">Product Title</label>
+        <input type="text" id="edit-title" required
+          class="form-input !py-3 font-semibold text-dark border-2 focus:border-primary">
+      </div>
+
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label class="label-text">Price (₹)</label>
+          <input type="number" id="edit-price" required
+            class="form-input !py-3 font-bold text-primary border-2 focus:border-primary">
+        </div>
+        <div>
+          <label class="label-text">Contact Info</label>
+          <input type="text" id="edit-contact" required class="form-input !py-3 border-2 focus:border-primary">
+        </div>
+      </div>
+
+      <div>
+        <label class="label-text">Description</label>
+        <textarea id="edit-description" rows="3"
+          class="form-input !py-3 resize-none border-2 focus:border-primary"></textarea>
+      </div>
+
+      <div class="pt-4 flex gap-4">
+        <button type="button" onclick="closeEditModal()"
+          class="flex-1 btn btn-secondary !bg-lightgray !border-transparent !text-dark hover:!bg-gray-200 h-[52px] font-bold">
+          Cancel
+        </button>
+        <button type="submit" id="saveBtn"
+          class="flex-1 btn btn-primary shadow-lg shadow-primary/20 h-[52px] font-extrabold text-lg">
+          Save Changes
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- DELETE CONFIRMATION MODAL -->
+<div id="deleteModal"
+  style="display:none; position:fixed; inset:0; background:rgba(15, 23, 42, 0.9); backdrop-filter: blur(12px); z-index:1000; align-items:center; justify-content:center; padding: 20px;">
+  <div
+    class="custom-card w-full max-w-[400px] text-center !p-10 shadow-2xl border-none animate-in fade-in zoom-in duration-300">
+    <div
+      class="w-20 h-20 bg-red-50 text-danger rounded-full flex items-center justify-center mx-auto mb-6 text-4xl shadow-sm">
+      <i class="fas fa-trash"></i>
+    </div>
+    <h3 id="modalTitle" class="text-2xl font-extrabold text-dark tracking-tight mb-3">Delete Listing?</h3>
+    <p id="modalText" class="text-[15px] text-graytext mb-8 leading-relaxed">Are you sure you want to remove this
+      listing? This action is permanent and cannot be reversed.</p>
+
+    <div class="flex flex-col gap-3">
+      <button id="confirmBtn"
+        class="w-full bg-danger hover:bg-red-700 text-white font-black py-4 rounded-xl shadow-lg shadow-danger/20 transition-all active:scale-95">
+        YES, PERMANENTLY DELETE
+      </button>
+      <button onclick="closeDeleteModal()"
+        class="w-full font-bold text-gray-500 hover:text-dark py-2 transition-colors">
+        Keep My Listing
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+  function applyLinkFilter(key, value) {
+    document.getElementById('filter_' + key).value = value;
+    document.getElementById('filterForm').submit();
+  }
+
+  let deleteTargetId = null;
+
+  function confirmDelete(id, isAdmin) {
+    deleteTargetId = id;
+    const title = document.getElementById('modalTitle');
+    const text = document.getElementById('modalText');
+
+    if (isAdmin) {
+      title.innerHTML = '<span class="text-danger"><i class="fas fa-shield-alt"></i> Admin Delete?</span>';
+      text.textContent = '⚠️ You are performing an Admin action to remove another user\'s listing from the platform.';
+    } else {
+      title.innerHTML = '<i class="fas fa-trash"></i> Delete Your Listing?';
+      text.textContent = 'Are you sure you want to remove this listing? This action is permanent and cannot be reversed.';
+    }
+
+    document.getElementById('confirmBtn').onclick = () => submitDelete(id);
+    document.getElementById('deleteModal').style.display = 'flex';
+  }
+
+  function submitDelete(id) {
+    fetch('/item/' + id + '/delete', { method: 'DELETE' })
+      .then(res => {
+        if (res.ok) {
+          location.reload();
+        } else {
+          res.json().then(data => softAlert('Delete Failed', data.detail || 'Failed to remove listing', 'danger'));
+        }
+      })
+      .catch(() => softAlert('Network Error', 'Please check your connection', 'danger'));
+  }
+
+  function closeDeleteModal() {
+    document.getElementById('deleteModal').style.display = 'none';
+  }
+
+  // MARK AS SOLD LOGIC
+  function markAsSold(id) {
+    softConfirm(
+      'Mark as Sold?',
+      'This will hide the item from browse pages and mark it as completed. Continue?',
+      () => {
+        const formData = new FormData();
+        formData.append('status', 'sold');
+
+        fetch('/item/' + id + '/status', {
+          method: 'POST',
+          body: formData
+        })
+          .then(res => {
+            if (res.ok) {
+              location.reload();
+            } else {
+              softAlert('Error', 'Failed to update status', 'danger');
+            }
+          });
+      },
+      'info'
+    );
+  }
+
+  // ELITE EDIT MODAL LOGIC
+  function openEditModal(item) {
+    document.getElementById('edit-id').value = item.id;
+    document.getElementById('edit-title').value = item.title;
+    document.getElementById('edit-price').value = item.price;
+    document.getElementById('edit-contact').value = item.contact || '';
+    document.getElementById('edit-description').value = item.description || '';
+    document.getElementById('editError').style.display = 'none';
+
+    const titleEl = document.getElementById('editModalTitle');
+    const subtitleEl = document.getElementById('editModalSubtitle');
+
+    // Check if the current user is admin to change subtitle
+    {% if current_user %}
+    if ("{{ current_user.role }}" === "admin" && "{{ current_user.id }}" !== String(item.seller_id)) {
+      titleEl.innerHTML = '<span class="text-danger"><i class="fas fa-shield-alt"></i> Admin Edit</span>';
+      subtitleEl.innerHTML = '<span class="text-danger font-bold">OVERRIDE MODE</span>: You are modifying another user\'s content.';
+    } else {
+      titleEl.textContent = 'Edit Listing';
+      subtitleEl.textContent = 'Update your item details';
+    }
+    {% endif %}
+
+    document.getElementById('editModal').style.display = 'flex';
+  }
+
+  function closeEditModal() {
+    document.getElementById('editModal').style.display = 'none';
+  }
+
+  document.getElementById('editForm').onsubmit = function (e) {
+    e.preventDefault();
+    const id = document.getElementById('edit-id').value;
+    const saveBtn = document.getElementById('saveBtn');
+    saveBtn.disabled = true;
+    saveBtn.textContent = 'Saving...';
+
+    const formData = new FormData();
+    formData.append('title', document.getElementById('edit-title').value);
+    formData.append('price', document.getElementById('edit-price').value);
+    formData.append('contact', document.getElementById('edit-contact').value);
+    formData.append('description', document.getElementById('edit-description').value);
+
+    fetch('/item/' + id, {
+      method: 'PUT',
+      body: formData
+    })
+      .then(res => {
+        if (res.ok) {
+          // PROFESSIONAL AJAX UPDATE: Update DOM elements directly
+          document.getElementById('display-title-' + id).textContent = document.getElementById('edit-title').value;
+          document.getElementById('display-price-' + id).textContent = document.getElementById('edit-price').value;
+
+          // Success animation
+          const card = document.getElementById('item-card-' + id);
+          card.style.ring = '4px solid #0D9488';
+          setTimeout(() => {
+            card.style.ring = 'none';
+            closeEditModal();
+            saveBtn.disabled = false;
+            saveBtn.textContent = 'Save Changes';
+          }, 300);
+        } else {
+          res.json().then(data => {
+            document.getElementById('editErrorText').textContent = data.detail || 'Update failed';
+            document.getElementById('editError').style.display = 'flex';
+            saveBtn.disabled = false;
+            saveBtn.textContent = 'Save Changes';
+          });
+        }
+      })
+      .catch(() => {
+        document.getElementById('editErrorText').textContent = 'Network error. Please try again.';
+        document.getElementById('editError').style.display = 'flex';
+        saveBtn.disabled = false;
+        saveBtn.textContent = 'Save Changes';
+      });
+  };
+</script>
 
 <style>
   .line-clamp-2 {
     display: -webkit-box;
     -webkit-line-clamp: 2;
+    line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
+  }
+
+  .glass-badge {
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(4px);
+    border: 1px solid rgba(13, 148, 136, 0.2);
+  }
+
+  /* NEXBUILD STYLE SIDEBAR */
+  .sidebar {
+    width: 240px;
+    background: white;
+    border-right: 1px solid #E2E8F0;
+    padding: 24px 0;
+    position: sticky;
+    top: 64px;
+    height: calc(100vh - 64px);
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Section Labels: WORK, COMMUNITY, SETTINGS style */
+  .sidebar-group-label {
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    color: #94A3B8;
+    padding: 28px 20px 8px 24px;
+    text-transform: uppercase;
+    opacity: 0.8;
+  }
+
+  .sidebar-section {
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    /* Slight gap between items */
+  }
+
+  /* Pill-style items with horizontal inset */
+  .sidebar-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 0 12px;
+    padding: 11px 16px;
+    text-decoration: none;
+    color: #475569;
+    font-size: 14px;
+    font-weight: 500;
+    border-radius: 10px;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+    border: none;
+    background: transparent;
+    text-align: left;
+    position: relative;
+  }
+
+  .sidebar-item:hover {
+    background: #F8FAFC;
+    color: #0D9488;
+    transform: translateX(2px);
+  }
+
+  .sidebar-item.active {
+    background: #F0FDFA;
+    color: #0D9488;
+    font-weight: 700;
+  }
+
+  /* Sharp vertical indicator exactly like the reference green line */
+  .sidebar-item.active::before {
+    content: '';
+    position: absolute;
+    left: -12px;
+    /* Pull into the sidebar margin */
+    top: 15%;
+    height: 70%;
+    width: 4px;
+    background: #0D9488;
+    border-radius: 0 4px 4px 0;
+    box-shadow: 2px 0 8px rgba(13, 148, 136, 0.2);
+  }
+
+  .sidebar-item i {
+    width: 20px;
+    text-align: center;
+    font-size: 16px;
+    color: #64748B;
+    transition: all 0.2s;
+  }
+
+  .sidebar-item.active i,
+  .sidebar-item:hover i {
+    color: #0D9488;
+    transform: scale(1.1);
+  }
+
+  .sidebar-search {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: #F1F5F9;
+    border: 1.5px solid #E2E8F0;
+    border-radius: 12px;
+    padding: 12px 16px;
+    margin: 0 16px 16px 16px;
+    transition: all 0.3s;
+  }
+
+  .sidebar-search:focus-within {
+    background: white;
+    border-color: #0D9488;
+    box-shadow: 0 4px 12px rgba(13, 148, 136, 0.08);
+  }
+
+  .sidebar-search input {
+    border: none;
+    background: transparent;
+    outline: none;
+    font-size: 14px;
+    color: #1E293B;
+    width: 100%;
+    font-weight: 500;
+  }
+
+  .sidebar-search i {
+    color: #94A3B8;
+  }
+
+  .price-inputs {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 16px;
+    margin: 0 12px;
+  }
+
+  .price-inputs input {
+    width: 100%;
+    padding: 10px;
+    border: 1.5px solid #E2E8F0;
+    border-radius: 10px;
+    font-size: 13px;
+    color: #1E293B;
+    outline: none;
+    background: #F8FAFC;
+    transition: all 0.2s;
+  }
+
+  .price-inputs input:focus {
+    background: white;
+    border-color: #0D9488;
+  }
+
+  .price-inputs span {
+    color: #CBD5E1;
+    font-weight: 700;
+  }
+
+  .sidebar-clear {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 24px 16px 0 16px;
+    padding: 12px 16px;
+    color: #EF4444;
+    font-size: 14px;
+    font-weight: 700;
+    text-decoration: none;
+    border-radius: 10px;
+    transition: all 0.2s;
+    border: 1px solid transparent;
+  }
+
+  .sidebar-clear:hover {
+    background: #FEF2F2;
+    border-color: #FEE2E2;
+    transform: translateY(-1px);
+  }
+
+  @media (max-width: 1024px) {
+    .sidebar {
+      width: 100%;
+      height: auto;
+      border-right: none;
+      border-bottom: 1px solid #E2E8F0;
+      position: static;
+      padding: 16px 0;
+    }
+  }
+
+  @media (max-width: 1024px) {
+    .sidebar {
+      width: 100%;
+      height: auto;
+      min-height: auto;
+      border-right: none;
+      border-bottom: 1px solid #E2E8F0;
+      position: static;
+    }
   }
 </style>
 {% endblock %}

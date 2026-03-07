@@ -1,73 +1,817 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{% block title %}SecondShift{% endblock %}</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+          },
+          colors: {
+            primary: '#0D9488',
+            primaryLight: '#CCFBF1',
+            accent: '#F97316',
+            dark: '#0F172A',
+            graytext: '#64748B',
+            lightgray: '#F1F5F9',
+            danger: '#EF4444',
+            success: '#22C55E'
+          },
+          boxShadow: {
+            'sm': '0 1px 4px rgba(0,0,0,0.06)',
+            'md': '0 4px 16px rgba(0,0,0,0.10)',
+            'lg': '0 8px 32px rgba(0,0,0,0.14)',
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    /* GLOBAL RULES */
+    :root {
+      --color-primary: #0D9488;
+      --color-primary-light: #CCFBF1;
+      --color-accent: #F97316;
+      --color-dark: #0F172A;
+      --color-gray: #64748B;
+      --color-light-gray: #F1F5F9;
+      --color-white: #FFFFFF;
+      --color-danger: #EF4444;
+      --color-success: #22C55E;
+      --font: 'Inter', sans-serif;
+      --radius-sm: 6px;
+      --radius-md: 12px;
+      --radius-lg: 20px;
+      --shadow-sm: 0 1px 4px rgba(0, 0, 0, 0.06);
+      --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.10);
+      --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.14);
+      --transition: all 0.2s ease;
+    }
+
+    body {
+      font-family: var(--font);
+      background-color: var(--color-light-gray);
+      color: var(--color-dark);
+      font-size: 15px;
+      font-weight: 400;
+      line-height: 1.6;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+      color: var(--color-dark);
+    }
+
+    .page-container {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0 24px;
+      width: 100%;
+    }
+
+    section {
+      padding: 64px 0;
+    }
+
+    /* TYPOGRAPHY */
+    .hero-heading {
+      font-size: 32px;
+      font-weight: 800;
+      line-height: 1.1;
+    }
+
+    @media (min-width: 768px) {
+      .hero-heading {
+        font-size: 52px;
+      }
+    }
+
+    .section-heading {
+      font-size: 36px;
+      font-weight: 700;
+    }
+
+    .card-title {
+      font-size: 18px;
+      font-weight: 600;
+    }
+
+    .text-caption {
+      font-size: 12px;
+      font-weight: 400;
+      color: var(--color-gray);
+    }
+
+    .label-text {
+      font-size: 13px;
+      font-weight: 600;
+      color: #374151;
+      margin-bottom: 6px;
+      display: block;
+    }
+
+    /* BUTTONS */
+    .btn {
+      cursor: pointer;
+      transition: var(--transition);
+      font-weight: 600;
+      outline: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      border-radius: 8px;
+    }
+
+    .btn:active {
+      transform: scale(0.97);
+    }
+
+    .btn:focus-visible {
+      box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.15);
+    }
+
+    .btn-primary {
+      background-color: var(--color-primary);
+      color: var(--color-white);
+      padding: 10px 24px;
+    }
+
+    .btn-primary.btn-lg {
+      padding: 14px 32px;
+    }
+
+    .btn-primary:hover {
+      background-color: #0B7A6E;
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .btn-secondary {
+      background-color: transparent;
+      border: 1.5px solid var(--color-primary);
+      color: var(--color-primary);
+      padding: 10px 24px;
+    }
+
+    .btn-secondary.btn-lg {
+      padding: 14px 32px;
+    }
+
+    .btn-secondary:hover {
+      background-color: var(--color-primary-light);
+    }
+
+    .btn-danger {
+      background-color: var(--color-danger);
+      color: var(--color-white);
+      padding: 10px 24px;
+    }
+
+    .btn-danger:hover {
+      background-color: #DC2626;
+    }
+
+    /* INPUTS & FORMS */
+    .form-input {
+      border: 1.5px solid #E2E8F0;
+      border-radius: 8px;
+      padding: 12px 16px;
+      width: 100%;
+      transition: var(--transition);
+      background-color: var(--color-white);
+    }
+
+    .form-input::placeholder {
+      color: #94A3B8;
+    }
+
+    .form-input:focus {
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.15);
+      outline: none;
+    }
+
+    .form-input.error {
+      border-color: var(--color-danger);
+    }
+
+    /* CARDS */
+    .custom-card {
+      background-color: var(--color-white);
+      border: 1px solid #E2E8F0;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: var(--shadow-sm);
+      transition: var(--transition);
+    }
+
+    .custom-card:hover {
+      box-shadow: var(--shadow-md);
+      transform: translateY(-2px);
+    }
+
+    /* BADGES */
+    .badge-category {
+      background: var(--color-primary-light);
+      color: var(--color-primary);
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .badge-cond-new {
+      background: #DCFCE7;
+      color: #16A34A;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .badge-cond-like-new {
+      background: #DBEAFE;
+      color: #1D4ED8;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .badge-cond-good {
+      background: #FEF9C3;
+      color: #A16207;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .badge-cond-fair {
+      background: #FEE2E2;
+      color: #DC2626;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .badge-status-active {
+      background: #DCFCE7;
+      color: #16A34A;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .badge-status-sold {
+      background: #F1F5F9;
+      color: #64748B;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .badge-status-paused {
+      background: #FEF3C7;
+      color: #D97706;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    /* NAVBAR */
+    .navbar {
+      background: var(--color-white);
+      border-bottom: 1px solid #E2E8F0;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      height: 64px;
+      padding: 0 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    @media (max-width: 768px) {
+      .navbar {
+        padding: 0 20px;
+      }
+    }
+
+
+    .nav-link {
+      font-size: 14px;
+      font-weight: 500;
+      color: #374151;
+      transition: var(--transition);
+      height: 64px;
+      display: inline-flex;
+      align-items: center;
+      border-bottom: 2px solid transparent;
+    }
+
+    .nav-link:hover {
+      color: var(--color-primary);
+    }
+
+    .nav-link.active {
+      color: var(--color-primary);
+      border-bottom-color: var(--color-primary);
+    }
+
+    /* IMAGE FALLBACK */
+    .img-fallback {
+      background: var(--color-light-gray);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 30px;
+      color: #94A3B8;
+    }
+
+    /* ANIMATIONS */
+    .fade-in {
+      animation: fadeIn 0.3s ease forwards;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+
+      to {
+        opacity: 1;
+      }
+    }
+
+    /* HOME SPECIFIC */
+    .hero-banner {
+      min-height: 85vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      background: linear-gradient(135deg, #F0FDFA 0%, #FFFFFF 60%);
+    }
+
+    .cat-icon-area {
+      width: 90px;
+      height: 90px;
+      margin: 0 auto 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 40px;
+      border-radius: 50%;
+      background: var(--color-light-gray);
+      transition: var(--transition);
+    }
+
+    .custom-card:hover .cat-icon-area {
+      transform: scale(1.04);
+      background: var(--color-primary-light);
+    }
+
+    /* Soft Popup / Modal styles */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.8);
+      backdrop-filter: blur(8px);
+      z-index: 9999;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .soft-modal {
+      background: white;
+      width: 100%;
+      max-width: 440px;
+      border-radius: 20px;
+      padding: 32px;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+      border: 1px solid #E2E8F0;
+      transform: scale(0.95);
+      opacity: 0;
+      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .modal-overlay.active {
+      display: flex;
+    }
+
+    .modal-overlay.active .soft-modal {
+      transform: scale(1);
+      opacity: 1;
+    }
+
+    /* Notification Dropdown */
+    .notif-dropdown {
+      display: none;
+      position: absolute;
+      top: calc(100% + 10px);
+      right: 0;
+      width: 320px;
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+      border: 1px solid #E2E8F0;
+      z-index: 1000;
+      overflow: hidden;
+    }
+
+    .notif-dropdown.active {
+      display: block;
+      animation: slideDown 0.2s ease-out;
+    }
+
+    @keyframes slideDown {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  </style>
 </head>
 
-<body class="bg-gray-50 flex flex-col min-h-screen">
+<body class="fade-in">
 
-<!-- NAVBAR -->
-<nav class="bg-white shadow-md sticky top-0 z-50">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="flex justify-between items-center h-16">
-      <a href="/" class="text-2xl font-bold text-indigo-600 hover:text-indigo-700 transition">
-        SecondShift
+  <!-- NAVBAR -->
+  <nav class="navbar w-full">
+    <div class="page-container flex justify-between items-center h-full px-0">
+
+      <!-- Left Logo -->
+      <a href="/" style="text-decoration:none;">
+        <img src="/static/logo.png" alt="SecondShift Logo" style="height:48px; width:auto; 
+                 object-fit:contain;
+                 display:block;">
       </a>
-      
-      <div class="flex space-x-6 items-center">
+
+      <!-- Center Links (Desktop) -->
+      <div class="hidden md:flex space-x-8 h-full">
+        <a href="/" class="nav-link {% if request.url.path == '/' %}active{% endif %}">Home</a>
+        <a href="/buy" class="nav-link {% if request.url.path == '/buy' %}active{% endif %}">Browse Items</a>
+      </div>
+
+      <!-- Right Auth / Menu -->
+      <div class="flex items-center gap-4">
         {% if user_id %}
-          <a href="/dashboard" class="text-gray-700 hover:text-indigo-600 transition font-medium">Dashboard</a>
-          <a href="/buy" class="text-gray-700 hover:text-indigo-600 transition font-medium">Browse</a>
-          <a href="/sell" class="text-gray-700 hover:text-indigo-600 transition font-medium">Sell</a>
-          <a href="/logout" class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition font-medium">
-            Logout
-          </a>
-        {% else %}
-          <a href="/login" class="text-gray-700 hover:text-indigo-600 transition font-medium">Login</a>
-          <a href="/signup" class="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition font-medium">
-            Sign Up
-          </a>
+        {% if current_user and current_user.role == "admin" %}
+        <a href="/admin" style="
+             color: #EF4444;
+             font-weight: 700;
+             font-size: 14px;
+             padding: 6px 14px;
+             border: 1.5px solid #EF4444;
+             border-radius: 6px;
+             text-decoration: none;
+             margin-right: 8px;
+           ">
+          <i class="fas fa-shield-alt"></i> Manage
+        </a>
         {% endif %}
+        <a href="/sell" class="btn btn-primary hidden sm:inline-flex">Sell Item</a>
+        <div class="relative">
+          <button onclick="toggleNotifications(event)"
+            class="relative p-2 text-graytext hover:text-primary transition rounded-full hover:bg-lightgray">
+            <span class="absolute top-1 right-1 block w-2 h-2 rounded-full bg-danger ring-2 ring-white"></span>
+            <i class="fas fa-bell text-xl"></i>
+          </button>
+
+          <div id="notifDropdown" class="notif-dropdown">
+            <div class="px-5 py-4 border-b border-[#E2E8F0] flex justify-between items-center bg-[#F8FAFC]">
+              <span class="font-bold text-dark">Notifications</span>
+              <span class="text-[11px] bg-primaryLight text-primary px-2 py-0.5 rounded-full font-bold">2 NEW</span>
+            </div>
+            <div class="max-h-[300px] overflow-y-auto">
+              <div class="px-5 py-4 border-b border-[#F1F5F9] hover:bg-lightgray transition cursor-pointer">
+                <div class="flex gap-3">
+                  <div
+                    class="w-8 h-8 rounded-full bg-primaryLight text-primary flex items-center justify-center flex-shrink-0">
+                    <i class="fas fa-check text-xs"></i>
+                  </div>
+                  <div>
+                    <p class="text-[13px] text-dark font-semibold">Listing Approved!</p>
+                    <p class="text-[12px] text-graytext mt-0.5">Your "Calculus 101" book is now live.</p>
+                  </div>
+                </div>
+              </div>
+              <div class="px-5 py-4 border-b border-[#F1F5F9] hover:bg-lightgray transition cursor-pointer">
+                <div class="flex gap-3">
+                  <div
+                    class="w-8 h-8 rounded-full bg-amber-50 text-amber-500 flex items-center justify-center flex-shrink-0">
+                    <i class="fas fa-heart text-xs"></i>
+                  </div>
+                  <div>
+                    <p class="text-[13px] text-dark font-semibold">New Interest</p>
+                    <p class="text-[12px] text-graytext mt-0.5">Someone just viewed your listing.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="p-3 text-center bg-[#F8FAFC]">
+              <button class="text-[12px] font-bold text-primary hover:text-dark transition">Clear All
+                Notifications</button>
+            </div>
+          </div>
+        </div>
+        <a href="/dashboard" class="flex items-center ml-1">
+          <div
+            class="h-9 w-9 rounded-full bg-primary text-white flex items-center justify-center font-bold text-sm shadow-sm ring-2 ring-white hover:bg-[#0B7A6E] transition">
+            ME</div>
+        </a>
+        <a href="/logout"
+          class="text-sm font-medium text-graytext hover:text-danger transition hidden sm:block ml-2">Logout</a>
+        {% else %}
+        <a href="/sell" class="btn btn-primary hidden sm:inline-flex">Sell Item</a>
+        <a href="/login" class="text-sm font-semibold text-gray-800 hover:text-primary transition">Login</a>
+        <a href="/signup" class="btn btn-secondary flex items-center h-10 px-6">Sign Up</a>
+        {% endif %}
+        <!-- Mobile Menu (Hamburger) -->
+        <button class="md:hidden p-2 text-graytext focus:outline-none">
+          <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+        </button>
+      </div>
+
+    </div>
+  </nav>
+
+  <!-- MAIN CONTENT -->
+  <main class="flex-grow w-full">
+    {% block content %}
+
+    <!-- HERO SECTION -->
+    <div class="hero-banner">
+      <div class="page-container">
+        <h1 class="hero-heading text-dark mb-6">
+          Buy & Sell Anything <br />
+          <span class="text-primary">On Your Campus</span>
+        </h1>
+        <p class="mt-4 text-[18px] text-graytext max-w-2xl mx-auto mb-10 leading-relaxed md:text-xl">
+          Connect with students in your college to buy and sell second-hand items safely.
+        </p>
+        <div class="flex flex-col sm:flex-row justify-center items-center gap-4">
+          <a href="/buy" class="btn btn-primary btn-lg w-full sm:w-auto text-[16px]">Browse Items</a>
+          <a href="/sell" class="btn btn-secondary btn-lg w-full sm:w-auto bg-white text-[16px]">Start Selling</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- CATEGORIES GRID -->
+    <section class="bg-white">
+      <div class="page-container">
+        <div class="text-center mb-12">
+          <h2 class="section-heading">Explore Categories</h2>
+        </div>
+
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-5">
+          <a href="/buy?category=books" class="custom-card flex flex-col items-center justify-center text-center">
+            <div class="cat-icon-area text-primary text-2xl"><i class="fas fa-book"></i></div>
+            <h3 class="card-title">Books</h3>
+          </a>
+          <a href="/buy?category=electronics" class="custom-card flex flex-col items-center justify-center text-center">
+            <div class="cat-icon-area text-primary text-2xl"><i class="fas fa-laptop"></i></div>
+            <h3 class="card-title">Electronics</h3>
+          </a>
+          <a href="/buy?category=furniture" class="custom-card flex flex-col items-center justify-center text-center">
+            <div class="cat-icon-area text-primary text-2xl"><i class="fas fa-chair"></i></div>
+            <h3 class="card-title">Furniture</h3>
+          </a>
+          <a href="/buy?category=clothing" class="custom-card flex flex-col items-center justify-center text-center">
+            <div class="cat-icon-area text-primary text-2xl"><i class="fas fa-tshirt"></i></div>
+            <h3 class="card-title">Clothing</h3>
+          </a>
+          <a href="/buy?category=gaming" class="custom-card flex flex-col items-center justify-center text-center">
+            <div class="cat-icon-area text-primary text-2xl"><i class="fas fa-gamepad"></i></div>
+            <h3 class="card-title">Gaming</h3>
+          </a>
+          <a href="/buy?category=mobiles" class="custom-card flex flex-col items-center justify-center text-center">
+            <div class="cat-icon-area text-primary text-2xl"><i class="fas fa-mobile-alt"></i></div>
+            <h3 class="card-title">Mobiles</h3>
+          </a>
+          <a href="/buy?category=music" class="custom-card flex flex-col items-center justify-center text-center">
+            <div class="cat-icon-area text-primary text-2xl"><i class="fas fa-guitar"></i></div>
+            <h3 class="card-title">Music</h3>
+          </a>
+          <a href="/buy?category=other" class="custom-card flex flex-col items-center justify-center text-center">
+            <div class="cat-icon-area text-primary text-2xl"><i class="fas fa-box"></i></div>
+            <h3 class="card-title">Other</h3>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- HOW IT WORKS -->
+    <section class="bg-[#F8FAFC]">
+      <div class="page-container">
+        <div class="text-center mb-16">
+          <h2 class="section-heading">How It Works</h2>
+          <p class="mt-4 text-graytext text-[16px]">Three simple steps to buy and sell on your campus securely.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
+          <div class="text-center">
+            <div class="step-circle hover:scale-105 transition transform">1</div>
+            <div class="text-4xl mb-4 text-primary"><i class="fas fa-camera"></i></div>
+            <h3 class="card-title mb-2">Post Your Item</h3>
+            <p class="text-graytext text-[15px]">Snap a picture, set a price, and describe what you're selling.</p>
+          </div>
+          <div class="text-center">
+            <div class="step-circle hover:scale-105 transition transform">2</div>
+            <div class="text-4xl mb-4 text-primary"><i class="fas fa-comments"></i></div>
+            <h3 class="card-title mb-2">Buyer Contacts You</h3>
+            <p class="text-graytext text-[15px]">Interested students will reach out to you directly to negotiate.</p>
+          </div>
+          <div class="text-center">
+            <div class="step-circle hover:scale-105 transition transform">3</div>
+            <div class="text-4xl mb-4 text-primary"><i class="fas fa-handshake"></i></div>
+            <h3 class="card-title mb-2">Meet on Campus</h3>
+            <p class="text-graytext text-[15px]">Arrange a safe meeting spot at your college to exchange.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    {% endblock %}
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="bg-white border-t border-gray-200 mt-auto">
+    <div class="page-container py-10">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div>
+          <a href="/" style="text-decoration:none;" class="mb-4 inline-block">
+            <img src="/static/logo.png" alt="SecondShift Logo" style="height:40px; width:auto; 
+                     object-fit:contain;
+                     display:block;">
+          </a>
+          <p class="text-graytext text-[14px] leading-relaxed max-w-xs mt-1 text-caption font-medium">
+            Your college marketplace for safely buying and selling second-hand items within your campus.
+          </p>
+        </div>
+        <div>
+          <h4 class="font-semibold text-dark mb-4 tracking-wide text-caption uppercase">Quick Links</h4>
+          <ul class="space-y-3 text-[14px]">
+            <li><a href="/buy" class="text-graytext hover:text-primary transition font-medium">Browse Items</a></li>
+            <li><a href="/sell" class="text-graytext hover:text-primary transition font-medium">Start Selling</a></li>
+            <li><a href="/dashboard" class="text-graytext hover:text-primary transition font-medium">My Dashboard</a>
+            </li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="font-semibold text-dark mb-4 tracking-wide text-caption uppercase">Support</h4>
+          <ul class="space-y-3 text-[14px]">
+            <li><a href="#" class="text-graytext hover:text-primary transition font-medium">How it works</a></li>
+            <li><a href="#" class="text-graytext hover:text-primary transition font-medium">Safety Guidelines</a></li>
+            <li><a href="#" class="text-graytext hover:text-primary transition font-medium">Contact Us</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div
+        class="border-t border-[#E2E8F0] mt-10 pt-6 flex flex-col md:flex-row justify-between items-center text-caption font-medium">
+        <p>&copy; 2026 SecondShift. All rights reserved.</p>
+        <div class="flex space-x-6 mt-4 md:mt-0">
+          <a href="#" class="hover:text-primary transition">Privacy Policy</a>
+          <a href="#" class="hover:text-primary transition">Terms of Service</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- GLOBAL SOFT MODAL SYSTEM -->
+  <div id="globalModalOverlay" class="modal-overlay">
+    <div id="globalModal" class="soft-modal">
+      <div id="modalIcon"
+        class="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6 text-3xl shadow-sm">
+        <i class="fas fa-info-circle"></i>
+      </div>
+      <h3 id="globalModalTitle" class="text-2xl font-extrabold text-dark tracking-tight mb-3">Notice</h3>
+      <p id="globalModalText" class="text-[15px] text-graytext mb-8 leading-relaxed"></p>
+
+      <div id="modalActionContainer" class="flex flex-col gap-3">
+        <button id="modalConfirmBtn"
+          class="w-full btn btn-primary py-4 h-auto shadow-lg transition-all active:scale-95">
+          CONTINUE
+        </button>
+        <button id="modalCancelBtn" onclick="closeSoftModal()"
+          class="w-full font-bold text-gray-500 hover:text-dark py-2 transition-colors">
+          Cancel
+        </button>
       </div>
     </div>
   </div>
-</nav>
 
-<!-- MAIN CONTENT -->
-<main class="flex-grow container mx-auto px-4 sm:px-6 lg:px-8 py-8">
-  {% block content %}{% endblock %}
-</main>
+  <script>
+    // NOTIFICATION TOGGLE
+    function toggleNotifications(event) {
+      event.stopPropagation();
+      const dropdown = document.getElementById('notifDropdown');
+      dropdown.classList.toggle('active');
+    }
 
-<!-- FOOTER -->
-<footer class="bg-white border-t border-gray-200 mt-12">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-      <div>
-        <h3 class="text-lg font-bold text-indigo-600 mb-4">SecondShift</h3>
-        <p class="text-gray-600">Your college marketplace for buying and selling items.</p>
-      </div>
-      <div>
-        <h4 class="font-semibold text-gray-900 mb-4">Quick Links</h4>
-        <ul class="space-y-2 text-gray-600">
-          <li><a href="/buy" class="hover:text-indigo-600 transition">Browse Items</a></li>
-          <li><a href="/sell" class="hover:text-indigo-600 transition">Sell Items</a></li>
-          <li><a href="/dashboard" class="hover:text-indigo-600 transition">Dashboard</a></li>
-        </ul>
-      </div>
-      <div>
-        <h4 class="font-semibold text-gray-900 mb-4">About</h4>
-        <p class="text-gray-600 text-sm">SecondShift is a peer-to-peer marketplace for college students to buy and sell items within their campus community.</p>
-      </div>
-    </div>
-    <div class="border-t border-gray-200 mt-8 pt-8 text-center text-gray-600">
-      <p>&copy; 2026 SecondShift. All rights reserved.</p>
-    </div>
-  </div>
-</footer>
+    // Close on outside click
+    document.addEventListener('click', function () {
+      const dropdown = document.getElementById('notifDropdown');
+      if (dropdown) dropdown.classList.remove('active');
+    });
 
+    // SOFT MODAL ENGINE
+    function softAlert(title, text, type = 'info') {
+      const overlay = document.getElementById('globalModalOverlay');
+      const icon = document.getElementById('modalIcon');
+      const titleEl = document.getElementById('globalModalTitle');
+      const textEl = document.getElementById('globalModalText');
+      const confirmBtn = document.getElementById('modalConfirmBtn');
+      const cancelBtn = document.getElementById('modalCancelBtn');
+
+      titleEl.innerHTML = title;
+      textEl.textContent = text;
+      cancelBtn.style.display = 'none';
+      confirmBtn.onclick = closeSoftModal;
+      confirmBtn.className = 'w-full btn btn-primary py-4 h-auto shadow-lg transition-all active:scale-95';
+
+      if (type === 'danger') {
+        icon.className = 'w-16 h-16 bg-red-50 text-danger rounded-full flex items-center justify-center mx-auto mb-6 text-3xl shadow-sm';
+        icon.innerHTML = '<i class="fas fa-exclamation-triangle"></i>';
+        confirmBtn.className = 'w-full bg-danger text-white font-bold py-4 rounded-xl shadow-lg transition-all active:scale-95';
+      } else {
+        icon.className = 'w-16 h-16 bg-primaryLight text-primary rounded-full flex items-center justify-center mx-auto mb-6 text-3xl shadow-sm';
+        icon.innerHTML = '<i class="fas fa-info-circle"></i>';
+      }
+
+      overlay.classList.add('active');
+    }
+
+    function softConfirm(title, text, onConfirm, type = 'danger') {
+      const overlay = document.getElementById('globalModalOverlay');
+      const icon = document.getElementById('modalIcon');
+      const titleEl = document.getElementById('globalModalTitle');
+      const textEl = document.getElementById('globalModalText');
+      const confirmBtn = document.getElementById('modalConfirmBtn');
+      const cancelBtn = document.getElementById('modalCancelBtn');
+
+      titleEl.innerHTML = title;
+      textEl.textContent = text;
+      cancelBtn.style.display = 'block';
+
+      confirmBtn.onclick = () => {
+        onConfirm();
+        closeSoftModal();
+      };
+
+      if (type === 'danger') {
+        icon.className = 'w-16 h-16 bg-red-50 text-danger rounded-full flex items-center justify-center mx-auto mb-6 text-3xl shadow-sm';
+        icon.innerHTML = '<i class="fas fa-trash"></i>';
+        confirmBtn.className = 'w-full bg-danger text-white font-bold py-4 rounded-xl shadow-lg transition-all active:scale-95';
+        confirmBtn.textContent = 'YES, PROCEED';
+      } else {
+        icon.className = 'w-16 h-16 bg-primaryLight text-primary rounded-full flex items-center justify-center mx-auto mb-6 text-3xl shadow-sm';
+        icon.innerHTML = '<i class="fas fa-question-circle"></i>';
+        confirmBtn.className = 'w-full btn btn-primary py-4 h-auto shadow-lg transition-all active:scale-95';
+        confirmBtn.textContent = 'Confirm';
+      }
+
+      overlay.classList.add('active');
+    }
+
+    function closeSoftModal() {
+      const overlay = document.getElementById('globalModalOverlay');
+      overlay.classList.remove('active');
+    }
+  </script>
 </body>
-</html>
 
+</html>

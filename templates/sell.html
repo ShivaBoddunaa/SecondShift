@@ -2,147 +2,217 @@
 {% block title %}Sell Item · SecondShift{% endblock %}
 
 {% block content %}
-<div class="min-h-screen flex items-center justify-center px-4 py-12">
-  <div class="w-full max-w-2xl bg-white p-8 md:p-12 rounded-2xl shadow-xl">
-    <div class="mb-8">
-      <h1 class="text-4xl font-bold text-gray-900 mb-2">Sell Your Item</h1>
-      <p class="text-lg text-gray-600">List your item and connect with interested buyers on campus</p>
+<div class="py-[64px] bg-lightgray flex-grow flex items-center justify-center">
+  <div class="page-container max-w-[800px]">
+
+    <div class="mb-[32px] text-center fade-in">
+      <h1 class="hero-heading text-[36px] mb-2 leading-tight">Sell Your Item</h1>
+      <p class="text-[16px] text-graytext max-w-lg mx-auto">List your item and connect with interested buyers on campus
+        instantly.</p>
     </div>
 
     {% if error %}
-    <div class="bg-red-50 border-l-4 border-red-500 p-4 mb-6">
-      <p class="text-red-800">{{ error }}</p>
+    <div class="bg-red-50 border border-red-200 p-[16px] mb-[24px] rounded-[8px] flex items-start gap-3 shake fade-in">
+      <svg class="h-5 w-5 text-danger flex-shrink-0 mt-0.5" viewBox="0 0 20 20" fill="currentColor">
+        <path fill-rule="evenodd"
+          d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+          clip-rule="evenodd" />
+      </svg>
+      <p class="text-[14px] font-medium text-red-800">{{ error }}</p>
     </div>
     {% endif %}
 
-    <form method="post" action="/sell" enctype="multipart/form-data" class="space-y-6">
-      
-      <!-- TITLE -->
-      <div>
-        <label class="block text-sm font-medium text-gray-700 mb-3">
-          Item Title <span class="text-red-500">*</span>
-        </label>
-        <input 
-          type="text" 
-          name="title" 
-          placeholder="e.g., Used Textbook - Calculus 101"
-          class="w-full border-2 border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:border-indigo-500 transition"
-          required
-        >
-        <p class="text-sm text-gray-500 mt-1">Be specific and descriptive</p>
+    <!-- 4-STEP INDICATOR (Visual) -->
+    <div class="flex items-center justify-between mb-[48px] px-4 md:px-12 relative fade-in">
+      <div class="absolute left-0 top-1/2 transform -translate-y-1/2 w-full h-[2px] bg-[#E2E8F0] -z-10"></div>
+
+      <div class="flex flex-col items-center">
+        <div
+          class="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center font-bold text-[15px] shadow-sm mb-2 ring-4 ring-lightgray">
+          1</div>
+        <span class="text-[12px] font-semibold text-primary">Details</span>
       </div>
 
-      <!-- DESCRIPTION -->
-      <div>
-        <label class="block text-sm font-medium text-gray-700 mb-3">
-          Description <span class="text-gray-400">(Optional)</span>
-        </label>
-        <textarea 
-          name="description" 
-          rows="4"
-          placeholder="Describe the condition, features, and any other relevant details..."
-          class="w-full border-2 border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:border-indigo-500 transition"
-        ></textarea>
-        <p class="text-sm text-gray-500 mt-1">More details help buyers make informed decisions</p>
+      <div class="flex flex-col items-center">
+        <div
+          class="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center font-bold text-[15px] shadow-sm mb-2 ring-4 ring-lightgray">
+          2</div>
+        <span class="text-[12px] font-semibold text-primary">Photos</span>
       </div>
 
-      <!-- PRICE -->
-      <div>
-        <label class="block text-sm font-medium text-gray-700 mb-3">
-          Price <span class="text-red-500">*</span>
-        </label>
-        <div class="relative">
-          <span class="absolute left-4 top-3 text-gray-500 text-lg font-semibold">₹</span>
-          <input 
-            type="number" 
-            name="price" 
-            placeholder="0" 
-            min="0"
-            class="w-full border-2 border-gray-300 rounded-lg pl-10 pr-4 py-3 focus:outline-none focus:border-indigo-500 transition"
-            required
-          >
+      <div class="flex flex-col items-center">
+        <div
+          class="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center font-bold text-[15px] shadow-sm mb-2 ring-4 ring-lightgray">
+          3</div>
+        <span class="text-[12px] font-semibold text-primary">Contact</span>
+      </div>
+
+      <div class="flex flex-col items-center">
+        <div
+          class="w-10 h-10 rounded-full bg-[#E2E8F0] text-graytext flex items-center justify-center font-bold text-[15px] shadow-sm mb-2 ring-4 ring-lightgray">
+          4</div>
+        <span class="text-[12px] font-semibold text-graytext">Preview</span>
+      </div>
+    </div>
+
+    <!-- MAIN FORM -->
+    <form method="post" action="/sell" enctype="multipart/form-data" class="space-y-[32px] fade-in"
+      style="animation-delay: 0.1s;">
+
+      <!-- STEP 1: Details Card -->
+      <div class="custom-card !p-[32px]">
+        <h3 class="card-title text-[20px] border-b border-[#E2E8F0] pb-4 mb-[24px]">1. Item Details</h3>
+
+        <div class="space-y-[20px]">
+          <!-- TITLE -->
+          <div>
+            <label class="label-text flex justify-between">
+              <span>Item Title <span class="text-danger">*</span></span>
+              <span class="text-[12px] font-normal text-graytext">0/100</span>
+            </label>
+            <input type="text" name="title" placeholder="e.g., Used Textbook - Calculus 101" class="form-input" required
+              maxlength="100">
+            <p class="text-caption mt-1.5">Be specific and descriptive</p>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-[20px]">
+            <!-- CATEGORY -->
+            <div>
+              <label class="label-text">Category <span class="text-danger">*</span></label>
+              <select name="category" class="form-input cursor-pointer bg-white" required>
+                <option value="" disabled selected>Select a category</option>
+                <option value="books"><i class="fas fa-book"></i> Books</option>
+                <option value="electronics"><i class="fas fa-laptop"></i> Electronics</option>
+                <option value="furniture"><i class="fas fa-chair"></i> Furniture</option>
+                <option value="clothing"><i class="fas fa-tshirt"></i> Clothing</option>
+                <option value="gaming"><i class="fas fa-gamepad"></i> Gaming</option>
+                <option value="mobiles"><i class="fas fa-mobile-alt"></i> Mobiles</option>
+                <option value="music"><i class="fas fa-guitar"></i> Music</option>
+                <option value="other"><i class="fas fa-box"></i> Other</option>
+              </select>
+            </div>
+
+            <!-- CONDITION -->
+            <div>
+              <label class="label-text">Condition <span class="text-danger">*</span></label>
+              <select name="condition" class="form-input cursor-pointer bg-white" required>
+                <option value="" disabled selected>Select condition</option>
+                <option value="New"><i class="fas fa-star" style="color: #fbbf24;"></i> New</option>
+                <option value="Like New"><i class="fas fa-check"></i> Like New</option>
+                <option value="Good"><i class="fas fa-thumbs-up"></i> Good</option>
+                <option value="Fair"><i class="fas fa-wrench"></i> Fair</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- DESCRIPTION -->
+          <div>
+            <label class="label-text flex justify-between">
+              <span>Description <span class="text-graytext font-normal">(Optional)</span></span>
+              <span class="text-[12px] font-normal text-graytext">0/2000</span>
+            </label>
+            <textarea name="description" rows="4"
+              placeholder="Describe the condition, features, and any other relevant details..."
+              class="form-input resize-y"></textarea>
+            <p class="text-caption mt-1.5">More details help buyers make informed decisions</p>
+          </div>
+
+          <!-- PRICE -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-[20px] items-end">
+            <div>
+              <label class="label-text">Price <span class="text-danger">*</span></label>
+              <div class="relative">
+                <span class="absolute left-4 top-[14px] text-graytext font-semibold">₹</span>
+                <input type="number" name="price" placeholder="0" min="0" class="form-input pl-9" required>
+              </div>
+            </div>
+
+            <div class="h-[48px] flex items-center px-4 bg-lightgray rounded-lg border border-[#E2E8F0]">
+              <input type="checkbox" name="negotiable" id="negotiable" value="true"
+                class="w-4 h-4 text-primary focus:ring-primary border-[#E2E8F0] rounded cursor-pointer transition">
+              <label for="negotiable" class="ml-2 text-[14px] font-medium text-dark cursor-pointer select-none">
+                Price is negotiable
+              </label>
+            </div>
+          </div>
         </div>
       </div>
 
-      <!-- NEGOTIABLE CHECKBOX -->
-      <div class="flex items-center space-x-3 p-4 bg-gray-50 rounded-lg">
-        <input 
-          type="checkbox" 
-          name="negotiable" 
-          id="negotiable"
-          value="true"
-          class="w-5 h-5 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
-        >
-        <label for="negotiable" class="text-sm font-medium text-gray-700 cursor-pointer">
-          💰 Price is negotiable
-        </label>
+      <!-- STEP 2: Photos Card -->
+      <div class="custom-card !p-[32px]">
+        <h3 class="card-title text-[20px] border-b border-[#E2E8F0] pb-4 mb-[24px]">2. Upload Photo</h3>
+
+        <div>
+          <label class="label-text">Main Item Photo <span class="text-graytext font-normal">(Optional but
+              recommended)</span></label>
+          <div
+            class="border-2 border-dashed border-[#CBD5E1] bg-[#F8FAFC] rounded-[12px] p-[32px] text-center hover:border-primary transition group cursor-pointer relative"
+            onclick="document.getElementById('image-upload').click()">
+            <input type="file" name="image" accept="image/*" id="image-upload" class="hidden"
+              onchange="previewImage(event)">
+
+            <div id="upload-placeholder" class="transition">
+              <div
+                class="w-16 h-16 bg-white rounded-full flex items-center justify-center mx-auto mb-4 shadow-sm group-hover:scale-110 transition border border-[#E2E8F0]">
+                <i class="fas fa-cloud-upload-alt text-3xl text-primary"></i>
+              </div>
+              <p class="text-[16px] font-semibold text-dark mb-1">Click to upload image</p>
+              <p class="text-caption">PNG, JPG, GIF up to 5MB</p>
+            </div>
+
+            <div id="image-preview" class="hidden mt-4">
+              <div class="relative inline-block border-4 border-white shadow-md rounded-[8px] overflow-hidden">
+                <img id="preview-img" src="" class="max-h-[200px] object-cover" alt="Preview">
+                <div
+                  class="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 hover:opacity-100 transition">
+                  <span class="text-white font-medium text-[14px]">Change Photo</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
-      <!-- CONTACT DETAILS -->
-      <div>
-        <label class="block text-sm font-medium text-gray-700 mb-3">
-          Contact Details <span class="text-red-500">*</span>
-        </label>
-        <input 
-          type="text" 
-          name="contact" 
-          placeholder="e.g., 9876543210 or your.email@college.edu"
-          class="w-full border-2 border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:border-indigo-500 transition"
-          required
-        >
-        <p class="text-sm text-gray-500 mt-1">Phone number or email where buyers can reach you</p>
-      </div>
+      <!-- STEP 3: Contact Card -->
+      <div class="custom-card !p-[32px]">
+        <h3 class="card-title text-[20px] border-b border-[#E2E8F0] pb-4 mb-[24px]">3. Contact Details</h3>
 
-      <!-- IMAGE UPLOAD -->
-      <div>
-        <label class="block text-sm font-medium text-gray-700 mb-3">
-          Item Photo <span class="text-gray-400">(Optional)</span>
-        </label>
-        <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-indigo-500 transition">
-          <input 
-            type="file" 
-            name="image" 
-            accept="image/*"
-            id="image-upload"
-            class="hidden"
-            onchange="previewImage(event)"
-          >
-          <label for="image-upload" class="cursor-pointer">
-            <div class="text-4xl mb-2">📸</div>
-            <p class="text-gray-600 font-medium">Click to upload image</p>
-            <p class="text-sm text-gray-500 mt-1">PNG, JPG, GIF up to 5MB</p>
-          </label>
-          <div id="image-preview" class="mt-4"></div>
+        <div>
+          <label class="label-text">Contact Information <span class="text-danger">*</span></label>
+          <input type="text" name="contact" placeholder="e.g., 9876543210 or your.email@college.edu" class="form-input"
+            required>
+          <p class="text-caption mt-1.5 flex items-center gap-1.5">
+            <i class="fas fa-info-circle text-primary"></i>
+            This is how buyers will reach out to you directly.
+          </p>
         </div>
       </div>
 
       <!-- INFO BOX -->
-      <div class="bg-blue-50 border-l-4 border-blue-500 p-4 rounded">
-        <p class="text-sm text-blue-800">
-          <strong>💡 Pro Tips:</strong>
+      <div class="bg-[#F0FDFA] border-l-4 border-primary p-[16px] rounded-r-[8px]">
+        <p class="text-[14px] font-semibold text-[#0B7A6E] mb-2 flex items-center gap-2">
+          <i class="fas fa-lightbulb"></i>
+          Pro Tips for Faster Sales:
         </p>
-        <ul class="text-sm text-blue-800 mt-2 space-y-1 ml-4 list-disc">
-          <li>Items with clear photos sell 3x faster</li>
+        <ul class="text-[13px] text-[#0F766E] ml-6 list-disc space-y-1">
+          <li>Items with clear photos sell 3x faster on campus</li>
           <li>Detailed descriptions build buyer trust</li>
-          <li>Competitive pricing attracts more interest</li>
+          <li>Competitive pricing attracts more interest from students</li>
         </ul>
       </div>
 
       <!-- SUBMIT BUTTONS -->
-      <div class="flex gap-4 pt-4">
-        <button 
-          type="submit" 
-          class="flex-1 bg-green-600 text-white py-3 rounded-lg hover:bg-green-700 transition font-semibold text-lg shadow-md hover:shadow-lg"
-        >
-          ✅ Publish Item
+      <div class="flex flex-col sm:flex-row gap-[16px] pt-4 border-t border-[#E2E8F0]">
+        <button type="submit"
+          class="flex-1 btn btn-primary h-[54px] text-[16px] shadow-sm transform hover:-translate-y-1">
+          Publish Item
         </button>
-        <a 
-          href="/dashboard" 
-          class="flex-1 bg-gray-300 text-gray-800 py-3 rounded-lg hover:bg-gray-400 transition font-semibold text-lg text-center shadow-md"
-        >
-          ❌ Cancel
+        <a href="/dashboard"
+          class="sm:w-1/3 btn btn-secondary h-[54px] text-[16px] bg-white text-dark border-[#E2E8F0] hover:bg-lightgray shadow-sm">
+          Cancel
         </a>
       </div>
+
     </form>
   </div>
 </div>
@@ -151,17 +221,16 @@
   // Image preview functionality
   function previewImage(event) {
     const file = event.target.files[0];
-    const preview = document.getElementById('image-preview');
-    
+    const previewContainer = document.getElementById('image-preview');
+    const placeholder = document.getElementById('upload-placeholder');
+    const previewImg = document.getElementById('preview-img');
+
     if (file) {
       const reader = new FileReader();
-      reader.onload = function(e) {
-        preview.innerHTML = `
-          <div class="relative inline-block">
-            <img src="${e.target.result}" class="max-h-48 rounded-lg shadow-md" alt="Preview">
-            <p class="text-sm text-gray-600 mt-2">✓ Image selected: ${file.name}</p>
-          </div>
-        `;
+      reader.onload = function (e) {
+        previewImg.src = e.target.result;
+        previewContainer.classList.remove('hidden');
+        placeholder.classList.add('hidden');
       }
       reader.readAsDataURL(file);
     }

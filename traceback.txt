@@ -1,0 +1,19 @@
+Traceback (most recent call last):
+  File "D:\SecondShift\test_jinja.py", line 24, in <module>
+    templates.get_template("buy.html").render(context)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\vishn\AppData\Roaming\Python\Python314\site-packages\jinja2\environment.py", line 1295, in render
+    self.environment.handle_exception()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\vishn\AppData\Roaming\Python\Python314\site-packages\jinja2\environment.py", line 942, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "templates\buy.html", line 1, in top-level template code
+    {% extends "home.html" %}
+  File "templates\home.html", line 469, in top-level template code
+    {% block content %}
+  File "templates\buy.html", line 232, in block 'content'
+    {% if item.description %}
+    ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\vishn\AppData\Roaming\Python\Python314\site-packages\jinja2\environment.py", line 490, in getattr
+    return getattr(obj, attribute)
+jinja2.exceptions.UndefinedError: 'item' is undefined

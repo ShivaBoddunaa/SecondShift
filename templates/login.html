@@ -1,49 +1,350 @@
-{% extends "home.html" %}
-{% block title %}Login · SecondShift{% endblock %}
+<!DOCTYPE html>
+<html lang="en">
 
-{% block content %}
-<div class="min-h-screen flex items-center justify-center px-4">
-  <div class="w-full max-w-md bg-white p-8 rounded-2xl shadow-xl">
-    <div class="text-center mb-8">
-      <h1 class="text-4xl font-bold text-indigo-600 mb-2">SecondShift</h1>
-      <h2 class="text-2xl font-bold text-gray-900">Welcome Back</h2>
-      <p class="text-gray-600 mt-2">Sign in to your college marketplace account</p>
-    </div>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login · SecondShift</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'sans-serif'] },
+          colors: {
+            primary: '#0D9488',
+            primaryLight: '#CCFBF1',
+            accent: '#F97316',
+            dark: '#0F172A',
+            graytext: '#64748B',
+            lightgray: '#F1F5F9',
+            danger: '#EF4444',
+            success: '#22C55E'
+          },
+          boxShadow: {
+            'sm': '0 1px 4px rgba(0,0,0,0.06)',
+            'md': '0 4px 16px rgba(0,0,0,0.10)',
+            'lg': '0 8px 32px rgba(0,0,0,0.14)',
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    :root {
+      --color-primary: #0D9488;
+      --color-primary-light: #CCFBF1;
+      --color-accent: #F97316;
+      --color-dark: #0F172A;
+      --color-gray: #64748B;
+      --color-light-gray: #F1F5F9;
+      --color-white: #FFFFFF;
+      --color-danger: #EF4444;
+      --color-success: #22C55E;
+      --font: 'Inter', sans-serif;
+      --radius-sm: 6px;
+      --radius-md: 12px;
+      --radius-lg: 20px;
+      --shadow-sm: 0 1px 4px rgba(0, 0, 0, 0.06);
+      --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.10);
+      --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.14);
+      --transition: all 0.2s ease;
+    }
 
-    {% if error %}
-    <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-6">
-      {{ error }}
-    </div>
-    {% endif %}
+    body {
+      font-family: var(--font);
+      background-color: var(--color-white);
+      color: var(--color-dark);
+    }
 
-    <form method="post" action="/login" class="space-y-4">
-      <div>
-        <label class="block text-sm font-medium text-gray-700 mb-2">College Email</label>
-        <input type="email" name="email" placeholder="you@college.edu"
-          class="w-full border-2 border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:border-indigo-500 transition"
-          required>
+    .label-text {
+      font-size: 13px;
+      font-weight: 600;
+      color: #374151;
+      margin-bottom: 6px;
+      display: block;
+    }
+
+    .form-input {
+      border: 1.5px solid #E2E8F0;
+      border-radius: 8px;
+      padding: 12px 16px;
+      width: 100%;
+      transition: var(--transition);
+      background-color: var(--color-white);
+    }
+
+    .form-input::placeholder {
+      color: #94A3B8;
+    }
+
+    .form-input:focus {
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.15);
+      outline: none;
+    }
+
+    .btn {
+      cursor: pointer;
+      transition: var(--transition);
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
+      border: none;
+      outline: none;
+    }
+
+    .btn:active {
+      transform: scale(0.97);
+    }
+
+    .btn-primary {
+      background-color: var(--color-primary);
+      color: var(--color-white);
+    }
+
+    .btn-primary:hover {
+      background-color: #0B7A6E;
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .fade-in {
+      animation: fadeIn 0.3s ease forwards;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+
+      to {
+        opacity: 1;
+      }
+    }
+
+    @keyframes shake {
+
+      0%,
+      100% {
+        transform: translateX(0);
+      }
+
+      10%,
+      30%,
+      50%,
+      70%,
+      90% {
+        transform: translateX(-4px);
+      }
+
+      20%,
+      40%,
+      60%,
+      80% {
+        transform: translateX(4px);
+      }
+    }
+
+    .shake {
+      animation: shake 0.4s ease-in-out;
+    }
+  </style>
+</head>
+
+<body class="fade-in">
+  <div class="flex min-h-screen flex-col md:flex-row">
+
+    <!-- LEFT PANEL: 45% Width -->
+    <div id="left-panel" class="hidden md:flex flex-col relative overflow-hidden text-white w-[45%]" style="
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        padding: 48px;
+        background: var(--color-primary);
+        min-height: 100vh;
+        transition: background-color 0.3s ease;
+      ">
+      <!-- Decorative background elements -->
+      <div id="blob-1"
+        class="absolute top-[-10%] left-[-10%] w-96 h-96 rounded-full mix-blend-multiply filter blur-[80px] opacity-70"
+        style="background-color: var(--color-primary-light);">
+      </div>
+      <div id="blob-2"
+        class="absolute bottom-[-10%] right-[-10%] w-96 h-96 rounded-full mix-blend-multiply filter blur-[80px] opacity-70"
+        style="background-color: var(--color-accent); opacity: 0.3;">
       </div>
 
-      <div>
-        <label class="block text-sm font-medium text-gray-700 mb-2">Password</label>
-        <input type="password" name="password" placeholder="••••••••"
-          class="w-full border-2 border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:border-indigo-500 transition"
-          required>
+      <div class="max-w-md mx-auto relative z-10 w-full">
+        <a href="/" style="text-decoration:none;">
+          <div style="margin-bottom: 48px;">
+            <img src="/static/logo.png" alt="SecondShift" style="
+                width: 200px;
+                height: auto;
+                display: block;
+                object-fit: contain;
+                mix-blend-mode: screen;
+                filter: drop-shadow(0 0 0 white)
+                        brightness(10)
+                        saturate(0)
+                        invert(1)
+                        drop-shadow(0 2px 8px rgba(0,0,0,0.2));
+              ">
+            <div style="
+              margin-top: 8px;
+              font-family: 'Inter', sans-serif;
+              font-size: 26px;
+              font-weight: 800;
+              color: white;
+              letter-spacing: -0.5px;
+            ">
+              <i class="fas fa-box"></i> Second<span style="color: rgba(255,255,255,0.75);">Shift</span>
+            </div>
+          </div>
+        </a>
+        <p class="text-[18px] mb-12 text-[#CCFBF1] leading-[1.6]">Your exclusive college marketplace for buying and
+          selling items safely and effortlessly.</p>
+        <ul class="space-y-[20px]">
+          <li class="flex items-center gap-4">
+            <div class="flex-shrink-0 w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
+              <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+              </svg>
+            </div>
+            <span class="text-[15px] font-medium">Buy textbooks and electronics</span>
+          </li>
+          <li class="flex items-center gap-4">
+            <div class="flex-shrink-0 w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
+              <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+              </svg>
+            </div>
+            <span class="text-[15px] font-medium">Sell your unwanted items effortlessly</span>
+          </li>
+          <li class="flex items-center gap-4">
+            <div class="flex-shrink-0 w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
+              <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+              </svg>
+            </div>
+            <span class="text-[15px] font-medium">Connect safely with campus peers</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- RIGHT PANEL: 55% Width -->
+    <div class="flex flex-col justify-center bg-white w-full md:w-[55%] p-[48px] lg:px-[64px] relative">
+
+      <!-- Role Switcher & Back Link -->
+      <div class="absolute top-[32px] right-[32px] flex items-center gap-6">
+        <!-- Role Switcher Buttons -->
+        <div class="bg-lightgray p-1 rounded-lg flex gap-1 shadow-sm">
+          <button onclick="setTheme('user')" id="btn-user"
+            class="px-3 py-1.5 text-[12px] font-bold rounded-md transition-all duration-200 bg-white text-primary shadow-sm">
+            USER
+          </button>
+          <button onclick="setTheme('admin')" id="btn-admin"
+            class="px-3 py-1.5 text-[12px] font-bold rounded-md transition-all duration-200 text-graytext hover:text-dark">
+            ADMIN
+          </button>
+        </div>
+        <a href="/"
+          class="text-[14px] font-medium text-graytext hover:text-primary transition flex items-center gap-1.5">
+          &larr; Back to Home
+        </a>
       </div>
 
-      <button type="submit" class="w-full bg-indigo-600 text-white py-3 rounded-lg hover:bg-indigo-700 transition font-semibold text-lg">
-        Sign In
-      </button>
-    </form>
+      <div class="w-full max-w-[400px] mx-auto">
+        <div class="mb-[32px]">
+          <h2 class="text-[36px] font-bold text-dark tracking-tight leading-tight mb-2">Welcome Back</h2>
+          <p class="text-[15px] text-graytext leading-[1.6]">Please sign in to your account</p>
+        </div>
 
-    <div class="mt-6 pt-6 border-t border-gray-200">
-      <p class="text-center text-gray-600">
-        New here?
-        <a href="/signup" class="text-indigo-600 font-semibold hover:text-indigo-700 transition">Create account</a>
-      </p>
+        {% if error %}
+        <div class="bg-red-50 border border-red-200 p-[16px] mb-[24px] shake rounded-[8px] flex items-start gap-3">
+          <svg class="h-5 w-5 text-danger flex-shrink-0 mt-0.5" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd"
+              d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+              clip-rule="evenodd" />
+          </svg>
+          <p class="text-[14px] font-medium text-red-800">{{ error }}</p>
+        </div>
+        {% endif %}
+
+        <form class="space-y-[16px]" action="/login" method="POST">
+          <div>
+            <label for="email" class="label-text">Email address</label>
+            <input id="email" name="email" type="email" required placeholder="you@college.edu" class="form-input">
+          </div>
+
+          <div>
+            <label for="password" class="label-text">Password</label>
+            <input id="password" name="password" type="password" required placeholder="••••••••" class="form-input">
+          </div>
+
+          <div class="flex items-center justify-between pt-2 pb-2">
+            <div class="flex items-center">
+              <input id="remember-me" name="remember-me" type="checkbox"
+                class="h-4 w-4 text-primary focus:ring-primary border-[#E2E8F0] rounded cursor-pointer transition">
+              <label for="remember-me" class="ml-2 block text-[13px] text-[#374151] cursor-pointer">
+                Remember me
+              </label>
+            </div>
+            <a href="#" class="text-[13px] font-semibold text-primary hover:text-[#0B7A6E] transition">
+              Forgot your password?
+            </a>
+          </div>
+
+          <button type="submit" class="btn btn-primary w-full h-[48px] text-[16px] mt-2">
+            Sign In
+          </button>
+        </form>
+
+        <div class="mt-[32px] relative flex items-center justify-center">
+          <div class="absolute inset-x-0 h-px bg-[#E2E8F0]"></div>
+          <span class="relative bg-white px-4 text-[13px] text-graytext">or</span>
+        </div>
+
+        <div class="mt-[24px] text-center text-[14px] text-graytext">
+          Don't have an account?
+          <a href="/signup" class="font-semibold text-primary hover:text-[#0B7A6E] transition ml-1">
+            Create an account
+          </a>
+        </div>
+      </div>
     </div>
+
   </div>
-</div>
-{% endblock %}
 
+  <script>
+    // Theme Switcher Logic
+    function setTheme(role) {
+      const root = document.documentElement;
+      const btnUser = document.getElementById('btn-user');
+      const btnAdmin = document.getElementById('btn-admin');
 
+      if (role === 'admin') {
+        root.style.setProperty('--color-primary', '#EF4444');
+        root.style.setProperty('--color-primary-light', '#FEE2E2');
+
+        btnAdmin.className = 'px-3 py-1.5 text-[12px] font-bold rounded-md transition-all duration-200 bg-white shadow-sm text-danger';
+        btnUser.className = 'px-3 py-1.5 text-[12px] font-bold rounded-md transition-all duration-200 text-graytext hover:text-dark';
+      } else {
+        root.style.setProperty('--color-primary', '#0D9488');
+        root.style.setProperty('--color-primary-light', '#CCFBF1');
+
+        btnUser.className = 'px-3 py-1.5 text-[12px] font-bold rounded-md transition-all duration-200 bg-white shadow-sm text-primary';
+        btnAdmin.className = 'px-3 py-1.5 text-[12px] font-bold rounded-md transition-all duration-200 text-graytext hover:text-dark';
+      }
+    }
+  </script>
+</body>
+
+</html>
