@@ -11,10 +11,14 @@ import shutil
 from datetime import datetime
 
 router = APIRouter()
-templates = Jinja2Templates(directory="templates")
+templates = Jinja2Templates(directory="api/templates")
 
-UPLOAD_DIR = "static/uploads"
-os.makedirs(UPLOAD_DIR, exist_ok=True)
+# Use /tmp for Vercel (read-only filesystem), fallback to static/uploads locally
+UPLOAD_DIR = "/tmp/uploads" if os.environ.get("VERCEL") else "static/uploads"
+try:
+    os.makedirs(UPLOAD_DIR, exist_ok=True)
+except OSError:
+    pass
 
 
 @router.get("/sell")
@@ -124,7 +128,6 @@ async def delete_item(item_id: str, request: Request):
 
         item = item_response.data[0]
 
-        # Permission check: Admin or Seller
         is_admin = current_user.get("role") == "admin"
         is_seller = str(item.get("seller_id")) == str(current_user.get("id"))
 
@@ -161,7 +164,6 @@ async def edit_item(
 
         item = item_response.data[0]
 
-        # Permission check: Admin or Seller (Admin CAN now edit others' items)
         is_admin = current_user.get("role") == "admin"
         is_seller = str(item.get("seller_id")) == str(current_user.get("id"))
 
@@ -197,7 +199,6 @@ async def update_item_status(item_id: str, request: Request, status: str = Form(
 
         item = item_response.data[0]
 
-        # Only seller or admin can change status
         is_admin = current_user.get("role") == "admin"
         is_seller = str(item.get("seller_id")) == str(current_user.get("id"))
 

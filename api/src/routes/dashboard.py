@@ -7,7 +7,7 @@ from datetime import datetime, timezone
 import json
 
 router = APIRouter()
-templates = Jinja2Templates(directory="templates")
+templates = Jinja2Templates(directory="api/templates")
 
 
 @router.get("/dashboard")

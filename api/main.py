@@ -16,7 +16,7 @@ app = FastAPI()
 if os.path.exists("api/src/static"):
     app.mount("/static", StaticFiles(directory="api/src/static"), name="static")
 elif os.path.exists("src/static"):
-    app.mount("/static", StaticFiles(directory="src/static"), name="static")
+    app.mount("/static", StaticFiles(directory="api/src/static"), name="static")
 
 app.include_router(auth_router)
 app.include_router(pages_router)
@@ -51,7 +51,7 @@ if __name__ == "__main__":
 
 # app = FastAPI()
 
-# app.mount("/static", StaticFiles(directory="src/static"), name="static")
+# app.mount("/static", StaticFiles(directory="api/src/static"), name="static")
 
 # app.include_router(auth_router)
 # app.include_router(pages_router)

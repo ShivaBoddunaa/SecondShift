@@ -7,7 +7,7 @@ from fastapi.responses import RedirectResponse
 from api.src.utils.auth import get_current_user
 
 router = APIRouter()
-templates = Jinja2Templates(directory="templates")
+templates = Jinja2Templates(directory="api/templates")
 
 
 @router.get("/")

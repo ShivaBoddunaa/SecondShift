@@ -6,7 +6,7 @@ from api.src.config.db import db
 from api.src.config.signup import create_token
 
 router = APIRouter()
-templates = Jinja2Templates(directory="templates")
+templates = Jinja2Templates(directory="api/templates")
 
 
 @router.get("/login")
