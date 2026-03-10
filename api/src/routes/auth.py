@@ -2,8 +2,8 @@ from fastapi import APIRouter, Request, Form
 from fastapi.templating import Jinja2Templates
 from fastapi.responses import RedirectResponse
 import bcrypt  
-from src.config.db import db
-from src.config.signup import create_token
+from api.src.config.db import db
+from api.src.config.signup import create_token
 
 router = APIRouter()
 templates = Jinja2Templates(directory="templates")

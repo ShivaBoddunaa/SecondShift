@@ -1,6 +1,6 @@
 from fastapi import Request, HTTPException, Depends
 from jose import jwt, JWTError
-from src.config.signup import SECRET_KEY, ALGORITHM
+from api.src.config.signup import SECRET_KEY, ALGORITHM
 
 
 def get_current_user(request: Request):

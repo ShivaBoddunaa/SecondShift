@@ -1,8 +1,8 @@
 from fastapi import APIRouter, Request, HTTPException
 from fastapi.templating import Jinja2Templates
 from fastapi.responses import RedirectResponse, JSONResponse
-from src.utils.auth import get_current_user, require_admin
-from src.config.db import db
+from api.src.utils.auth import get_current_user, require_admin
+from api.src.config.db import db
 from datetime import datetime, timezone
 import json
 

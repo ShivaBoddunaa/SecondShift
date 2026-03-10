@@ -4,8 +4,8 @@ Items routes: Sell, Buy, Edit, Delete with permission checks
 from fastapi import APIRouter, Request, Form, UploadFile, File, HTTPException
 from fastapi.responses import RedirectResponse, HTMLResponse, JSONResponse
 from fastapi.templating import Jinja2Templates
-from src.utils.auth import get_current_user
-from src.config.db import db
+from api.src.utils.auth import get_current_user
+from api.src.config.db import db
 import os
 import shutil
 from datetime import datetime

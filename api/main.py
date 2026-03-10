@@ -44,10 +44,10 @@ if __name__ == "__main__":
 
 # load_dotenv() 
 
-# from src.routes.auth import router as auth_router
-# from src.routes.pages import router as pages_router
-# from src.routes.items import router as items_router
-# from src.routes.dashboard import router as dashboard_router
+# from api.src.routes.auth import router as auth_router
+# from api.src.routes.pages import router as pages_router
+# from api.src.routes.items import router as items_router
+# from api.src.routes.dashboard import router as dashboard_router
 
 # app = FastAPI()
 
@@ -79,9 +79,9 @@ if __name__ == "__main__":
 
 # from fastapi import FastAPI
 # from fastapi.staticfiles import StaticFiles
-# from src.routes.auth import router as auth_router
-# from src.routes.pages import router as pages_router
-# from src.routes.items import router as items_router
+# from api.src.routes.auth import router as auth_router
+# from api.src.routes.pages import router as pages_router
+# from api.src.routes.items import router as items_router
 # import os
 
 # app = FastAPI()
@@ -122,9 +122,9 @@ if __name__ == "__main__":
 # from fastapi import FastAPI
 # from fastapi.responses import HTMLResponse, RedirectResponse, JSONResponse
 # from fastapi.staticfiles import StaticFiles
-# from src.routes.auth import router as auth_router
-# from src.routes.pages import router as pages_router
-# from src.routes.items import router as items_router
+# from api.src.routes.auth import router as auth_router
+# from api.src.routes.pages import router as pages_router
+# from api.src.routes.items import router as items_router
 # import os
 
 # app = FastAPI()

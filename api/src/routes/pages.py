@@ -4,7 +4,7 @@ Page routes: Home
 from fastapi import APIRouter, Request
 from fastapi.templating import Jinja2Templates
 from fastapi.responses import RedirectResponse
-from src.utils.auth import get_current_user
+from api.src.utils.auth import get_current_user
 
 router = APIRouter()
 templates = Jinja2Templates(directory="templates")
