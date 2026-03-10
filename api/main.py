@@ -4,16 +4,15 @@ import os
 import uvicorn
 from dotenv import load_dotenv
 
-load_dotenv() 
+load_dotenv()
 
-from src.routes.auth import router as auth_router
-from src.routes.pages import router as pages_router
-from src.routes.items import router as items_router
-from src.routes.dashboard import router as dashboard_router
+from api.src.routes.auth import router as auth_router
+from api.src.routes.pages import router as pages_router
+from api.src.routes.items import router as items_router
+from api.src.routes.dashboard import router as dashboard_router
 
 app = FastAPI()
 
-# ✅ Fixed path for Vercel
 if os.path.exists("api/src/static"):
     app.mount("/static", StaticFiles(directory="api/src/static"), name="static")
 elif os.path.exists("src/static"):
